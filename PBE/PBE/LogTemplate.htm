@@ -1,0 +1,91 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <title>{Title}</title>
+    <style type="text/css">
+        table.ParamsTable { width: 100%; border: 3px solid #A0A0A0; }
+        td.Params { font-weight: bold; font-family: Arial; padding: 2px; background-color: #A0A0A0; }
+        td.ParamName { text-align: right; vertical-align: top; font-size: smaller; font-family: Arial; width: 1.5in; padding-right: 10px; padding-bottom: 3px; }
+        td.ParamValue { text-align: left; vertical-align: bottom; font-size: smaller; font-family: Consolas, Lucida Console; padding-bottom: 3; }
+        table.TasksTable { border: 3px solid #A0A0A0; width: 100%; margin-bottom: 5; }
+        td.TasksHeader { font-weight: bold; font-family: Arial; padding: 2; background-color: #A0A0A0; }
+        tr.TaskDetails { visibility: hidden; display: none; }
+        a.Show { background-color: white; font-family: Courier New; font-style: normal; font-weight: bold; width: 20; text-align: center; }
+        a.Hide { background-color: white; font-family: Courier New; font-style: normal; font-weight: bold; width: 20; text-align: center; visibility: hidden; display: none; }
+        td.TaskHeader { font-family: Arial; font-size: 12px; font-weight: bold; padding-left: 5px; padding-bottom: 2px; }
+        td.TaskHeader.Pending { background-color: #C0C0C0; }
+        td.TaskHeader.Running { background-color: #A0A0FF; }
+        td.TaskHeader.Completed { background-color: #C0FFC0; }
+        td.TaskHeader.CompletedError { background-color: #FF4040; color: #FFFF00; }
+        table.Task { width: 100%; border: 3px solid; }
+        table.Task.Pending { border-color: #909090; }
+        table.Task.Running { border-color: #60609F; }
+        table.Task.Completed { border-color: #80AF80; }
+        table.Task.CompletedError { border-color: #9F6060; }
+        td.Subtask { padding: 3px; vertical-align: top; }
+        pre.Logdetails { font-family: Consolas, Lucida Console; font-size: 11px; font-weight: normal; margin: 0px; padding: 5px; background-color: White; }
+        td.RunLabel { padding-top: 3px; padding-right: 5px; font-family: Arial; font-size: 11px; text-align: right; vertical-align: top; width: 65px; }
+        td.RunLabelContent { padding-top: 3px; font-family: Arial; font-weight: bold; font-size: 11px; text-align: left; vertical-align: top; }
+        span.TaskState { padding-left: 5px; padding-right: 5px; margin-left: 10px; background-color: white; font-size: 11px; font-weight: bold; color: Black; }
+        span.TaskDuration { padding-left: 3px; padding-right: 3px; font-size: 10.5px; font-weight: normal; color: #555555; }
+        table.PbexmlTable { width: 100%; border: 3px solid #A0A0A0; margin-top: 5px; }
+        td.PbexmlHeader { font-weight: bold; font-family: Arial; padding: 2px; background-color: #A0A0A0; }
+        td.PbexmlDetails { font-family: Consolas, Lucida Console; font-size: 11px; font-weight: normal; margin: 0px; padding: 5px; background-color: White; }
+    </style>
+    <script language="javascript" type="text/javascript">
+    <!--
+        function showRow(id) { if (NS4) { getElement(id).visibility = "show"; } else { getElement(id).style.visibility = "visible"; getElement(id).style.display = "inline"; getElement(id + "Hide").style.visibility = "visible"; getElement(id + "Hide").style.display = "inline"; getElement(id + "Show").style.visibility = "hidden"; getElement(id + "Show").style.display = "none"; } }
+        function hideRow(id) { if (NS4) { getElement(id).visibility = "show"; } else { getElement(id).style.visibility = "hidden"; getElement(id).style.display = "none"; getElement(id + "Hide").style.visibility = "hidden"; getElement(id + "Hide").style.display = "none"; getElement(id + "Show").style.visibility = "visible"; getElement(id + "Show").style.display = "inline"; } }
+        var DHTML = false, DOM = false, MSIE4 = false, NS4 = false, OP = false;
+        if (document.getElementById) { DHTML = true; DOM = true; } else { if (document.all) { DHTML = true; MSIE4 = true; } else { if (document.layers) { DHTML = true; NS4 = true; } } }
+        if (window.opera) { OP = true; }function getElement(Identifier) { var Element, ElementList; if (DOM) { Element = document.getElementById(Identifier); if (!Element) { Element = false; } return Element; } if (MSIE4) { Element = document.all(Identifier); if (!Element) { Element = false; } return Element; } if (NS4) { Element = document[Identifier]; if (!Element) { Element = document.anchors[Identifier]; } if (!Element) { Element = false; } return Element; } return false; }
+    -->
+    </script>
+</head>
+<body>
+    <table class="TasksTable" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="TasksHeader">
+                {Title}
+                <!-- Archive -->
+            </td>
+        </tr>
+        <tr>
+            <!-- TasksPlaceHolder -->
+        </tr>
+    </table>
+    <table class="ParamsTable" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="Params">
+                <a id="ParamsShow" href="javascript:showRow('Params')" class="Show">+</a>
+                <a id="ParamsHide" href="javascript:hideRow('Params')" class="Hide">-</a>
+                &nbsp;&nbsp;
+                Parameters
+            </td>
+        </tr>
+        <tr id="Params" class="TaskDetails">
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <!-- ParamsPlaceholder -->
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="PbexmlTable" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="PbexmlHeader">
+                <a id="PbexmlShow" href="javascript:showRow('Pbexml')" class="Show">+</a>
+                <a id="PbexmlHide" href="javascript:hideRow('Pbexml')" class="Hide">-</a>
+                &nbsp;&nbsp;
+                PBE.xml
+            </td>
+        </tr>
+        <tr id="Pbexml" class="TaskDetails">
+            <td class ="PbexmlDetails">
+                <!-- PbeXmlPlaceHolder -->
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE PBE SYSTEM "PBE.dtd">
+<PBE Logfile="C:\temp\Log.html" Logarchive="C:\temp\Archive\Log_{DateTime}.html">
+  <FSVersions>
+    <FSVersion FS="3.7.0.0" Dir="C:\Programme\Framework Systems\FrameworkStudio 3.7.3" />
+  </FSVersions>
+
+  <Params>
+    <Param Name="ExportDir" Value="E:\temp\export\" />
+    <Param Name="rep1" Value="\ConnectionType SqlServer \Server NV261 \Database FSDemo37" />
+    <Param Name="rep2" Value="\ConnectionType SqlServer \Server NV261 \Database FSDemo37Imp" />
+  </Params>
+
+  <Sequence>
+    <RD Name="letztes Export-Dir löschen" Dir="{ExportDir}" />
+    <MD Name="Export-Dir neu anlegen" Dir="{ExportDir}" />
+
+    <Parallel Name="Compile Repository 1">
+      <ImportQueue QueueName="ImportQueue" Rep="{rep2}" />
+
+      <Sequence Name="Compile-Lauf FS 3.7">
+        <CompileRun FS="3.7.0.0" Rep="{rep1}" Run="1" />
+
+        <Export FS="3.7.0.0" Rep="{rep1}" Package="Cust1" Version="3.2" Queue="ImportQueue" />
+        <Export FS="3.7.0.0" Rep="{rep1}" Package="Cust2" Version="3.2" Queue="ImportQueue" />
+      </Sequence>
+
+      <Sequence Name="Compile-Lauf FS 3.8">
+        <CompileRun FS="3.8.0.0" Rep="{rep1}" Run="1" />
+
+        <Export FS="3.8.0.0" Rep="{rep1}" Package="Cust1" Version="3.3" Queue="ImportQueue" />
+        <Export FS="3.8.0.0" Rep="{rep1}" Package="Cust2" Version="3.3" Queue="ImportQueue" />
+      </Sequence>
+    </Parallel>
+
+    <Parallel Name="Compile Repository 2">
+      <CompileRun FS="3.7.0.0" Rep="{rep2}" Run="1" />
+      <CompileRun FS="3.8.0.0" Rep="{rep2}" Run="1" />
+
+      <Condition Name="Sonntags-Compile" Value="{Weekday}" Equals="So">
+        <Parallel>
+          <CompileRun FS="3.7.0.0" Rep="{rep2}" Run="Sonntag" />
+          <CompileRun FS="3.8.0.0" Rep="{rep2}" Run="Sonntag" />
+        </Parallel>
+      </Condition>
+    </Parallel>
+
+    <Sequence Name="Publish">
+      <Batch Name="IIS beenden" Cmd="NET" Args="STOP W3SVC" />
+
+      <Parallel Name="Publish" MaxTasks="2">
+        <Publish FS="3.7.0.0" Rep="{rep1}" Package="Cust1" Version="3.2"
+                 Setting="Cust1_Setting1" />
+        <Publish FS="3.7.0.0" Rep="{rep1}" Package="Cust1" Version="3.2"
+                 Setting="Cust1_Setting2" />
+        <Publish FS="3.7.0.0" Rep="{rep1}" Package="Cust2" Version="3.2"
+                 Setting="Cust2_Demo" />
+      </Parallel>
+
+      <Batch Name="IIS wieder starten" Cmd="NET" Args="Start W3SVC" />
+    </Sequence>
+  </Sequence>
+</PBE>

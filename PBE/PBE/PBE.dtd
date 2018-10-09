@@ -1,0 +1,117 @@
+﻿<!ELEMENT PBE (FSVersions?,Params,Sequence)>
+<!ATTLIST PBE Logfile CDATA "">
+<!ATTLIST PBE Logarchive CDATA "">
+
+<!ELEMENT FSVersions (FSVersion*)>
+<!ELEMENT FSVersion EMPTY>
+<!ATTLIST FSVersion FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST FSVersion Dir CDATA #REQUIRED>
+
+<!ELEMENT Params (Param*)>
+<!ELEMENT Param EMPTY>
+<!ATTLIST Param Name CDATA #REQUIRED>
+<!ATTLIST Param Value CDATA #REQUIRED>
+
+<!ELEMENT Sequence ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD)*)>
+<!ATTLIST Sequence Name CDATA "">
+
+<!ELEMENT Condition ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD)*)>
+<!ATTLIST Condition Name CDATA "">
+<!ATTLIST Condition Value CDATA #REQUIRED>
+<!ATTLIST Condition Equals CDATA #REQUIRED>
+
+<!ELEMENT Parallel ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD|ImportQueue)*)>
+<!ATTLIST Parallel Name CDATA "">
+<!ATTLIST Parallel MaxTasks CDATA "">
+
+<!ELEMENT Batch EMPTY>
+<!ATTLIST Batch Name CDATA "">
+<!ATTLIST Batch Cmd CDATA #REQUIRED>
+<!ATTLIST Batch Args CDATA "">
+
+<!ELEMENT FSConsole EMPTY>
+<!ATTLIST FSConsole Name CDATA "">
+<!ATTLIST FSConsole FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST FSConsole Rep CDATA #REQUIRED>
+<!ATTLIST FSConsole Args CDATA #REQUIRED>
+
+<!ELEMENT CompileRun EMPTY>
+<!ATTLIST CompileRun Name CDATA "">
+<!ATTLIST CompileRun FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST CompileRun Rep CDATA #REQUIRED>
+<!ATTLIST CompileRun Run CDATA #REQUIRED>
+<!ATTLIST CompileRun MaxParallel CDATA "">
+
+<!ELEMENT Export EMPTY>
+<!ATTLIST Export Name CDATA "">
+<!ATTLIST Export FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST Export Rep CDATA #REQUIRED>
+<!ATTLIST Export Package CDATA #REQUIRED>
+<!ATTLIST Export Version CDATA #REQUIRED>
+<!ATTLIST Export Queue CDATA "">
+<!ATTLIST Export Mode CDATA #FIXED "Bugfix">
+<!ATTLIST Export Dir CDATA "">
+<!ATTLIST Export IncludeBasePackages (ServiceRelease|Unsealed|All) #IMPLIED>
+
+<!ELEMENT ApprovedExport EMPTY>
+<!ATTLIST ApprovedExport Name CDATA "">
+<!ATTLIST ApprovedExport FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST ApprovedExport Rep CDATA #REQUIRED>
+<!ATTLIST ApprovedExport Package CDATA #REQUIRED>
+<!ATTLIST ApprovedExport Version CDATA #REQUIRED>
+<!ATTLIST ApprovedExport Mode CDATA #FIXED "Bugfix">
+<!ATTLIST ApprovedExport Dir CDATA "">
+<!ATTLIST ApprovedExport IncludeBasePackages (ServiceRelease|Unsealed|All) #IMPLIED>
+
+<!ELEMENT Import EMPTY>
+<!ATTLIST Import Name CDATA "">
+<!ATTLIST Import FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST Import Rep CDATA #REQUIRED>
+<!ATTLIST Import Package CDATA #REQUIRED>
+<!ATTLIST Import Version CDATA #REQUIRED>
+<!ATTLIST Import Mode CDATA #FIXED "Bugfix">
+<!ATTLIST Import Dir CDATA "">
+
+<!ELEMENT ImportQueue EMPTY>
+<!ATTLIST ImportQueue Name CDATA "">
+<!ATTLIST ImportQueue Rep CDATA #REQUIRED>
+<!ATTLIST ImportQueue QueueName CDATA #REQUIRED>
+
+<!ELEMENT ApprovedImport EMPTY>
+<!ATTLIST ApprovedImport Name CDATA "">
+<!ATTLIST ApprovedImport Rep CDATA #REQUIRED>
+<!ATTLIST ApprovedImport Dir CDATA "">
+<!ATTLIST ApprovedImport HistoryDir CDATA "">
+
+<!ELEMENT Publish EMPTY>
+<!ATTLIST Publish Name CDATA "">
+<!ATTLIST Publish FS (4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
+<!ATTLIST Publish Rep CDATA #REQUIRED>
+<!ATTLIST Publish Package CDATA #REQUIRED>
+<!ATTLIST Publish Version CDATA #REQUIRED>
+<!ATTLIST Publish Setting CDATA #REQUIRED>
+
+<!ELEMENT Publish2Go EMPTY>
+<!ATTLIST Publish2Go Name CDATA "">
+<!ATTLIST Publish2Go FS (4.0.0.0|3.11.0.0) #REQUIRED>
+<!ATTLIST Publish2Go Rep CDATA #REQUIRED>
+<!ATTLIST Publish2Go Package CDATA #REQUIRED>
+<!ATTLIST Publish2Go Version CDATA #REQUIRED>
+<!ATTLIST Publish2Go Setting CDATA #REQUIRED>
+
+<!ELEMENT ExportDoc EMPTY>
+<!ATTLIST ExportDoc Name CDATA "">
+<!ATTLIST ExportDoc FS (4.0.0.0|3.11.0.0) #REQUIRED>
+<!ATTLIST ExportDoc Rep CDATA #REQUIRED>
+<!ATTLIST ExportDoc Package CDATA #REQUIRED>
+<!ATTLIST ExportDoc Version CDATA #REQUIRED>
+<!ATTLIST ExportDoc Iso CDATA #REQUIRED>
+<!ATTLIST ExportDoc Dir CDATA "">
+
+<!ELEMENT MD EMPTY>
+<!ATTLIST MD Name CDATA "">
+<!ATTLIST MD Dir CDATA #REQUIRED>
+
+<!ELEMENT RD EMPTY>
+<!ATTLIST RD Name CDATA "">
+<!ATTLIST RD Dir CDATA #REQUIRED>
