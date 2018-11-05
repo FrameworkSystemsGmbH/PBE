@@ -180,24 +180,28 @@ namespace PBE
                 // Die Dateien der Unterprozesse Einlesen.
                 this.LogDetailsSub = String.Empty;
                 FileInfo fi = new FileInfo(this.LogFile);
-                foreach (var file in fi.Directory.EnumerateFiles(Path.GetFileNameWithoutExtension(fi.Name) + "_*.TRACE"))
+                try
                 {
-                    int tries = 3;
-                    while (tries > 0)
+                    foreach (var file in fi.Directory.EnumerateFiles(Path.GetFileNameWithoutExtension(fi.Name) + "_*.TRACE"))
                     {
-                        try
+                        int tries = 3;
+                        while (tries > 0)
                         {
-                            tries--;
-                            string subText = File.ReadAllText(file.FullName);
-                            tries = 0;
-                            this.LogDetailsSub += Environment.NewLine +
-                                "=================== " + file.Name + " ===================" +
-                                Environment.NewLine +
-                                subText;
+                            try
+                            {
+                                tries--;
+                                string subText = File.ReadAllText(file.FullName);
+                                tries = 0;
+                                this.LogDetailsSub += Environment.NewLine +
+                                    "=================== " + file.Name + " ===================" +
+                                    Environment.NewLine +
+                                    subText;
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
                 }
+                catch { }
             }
 
             string detailsText = String.Empty;
