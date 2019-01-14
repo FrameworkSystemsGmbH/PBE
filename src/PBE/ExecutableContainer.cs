@@ -178,6 +178,19 @@ namespace PBE
                 fileName = "eNVenta";
             }
             fileName = "{ExportFilePrefix}" + fileName + "_" + version;
+            if (!String.IsNullOrEmpty(fsVersion))
+            {
+                Version fsver = Version.Parse(fsVersion);
+                int fieldCount = 4;
+                if (fsver.Revision == 0)
+                {
+                    fieldCount = 3;
+                    if (fsver.Build == 0)
+                        fieldCount = 2;
+                }
+
+                fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+            }
             return ParseParameters(fileName);
         }
 
