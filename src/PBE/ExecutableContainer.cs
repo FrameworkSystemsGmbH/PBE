@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PBE.CommandLineProcessor;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -94,8 +95,17 @@ namespace PBE
             throw new ApplicationException("No installation found for Framework Studio " + fsVersion + ".");
         }
 
-        public ExecutableContainer(XElement xe)
+        private void PrintHeader(CommandLineOptions options)
         {
+            Console.WriteLine("Analyze options...");
+            Console.WriteLine("  configuration file: " + PBEContext.CurrentContext.ConfigFile);
+            Console.WriteLine("  default log directory: " + PBEContext.CurrentContext.LogFileDirectory);
+            Console.WriteLine("  automatic mode: " + PBEContext.CurrentContext.AutomaticMode);
+            Console.WriteLine("  Filter: ");
+            foreach (string filter in PBEContext.CurrentContext.TaskFilters)
+                Console.WriteLine("    " + filter);
+
+            Console.WriteLine();
             Console.WriteLine("Analyze parameters...");
             SetParam("Weekday", DateTime.Now.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("de-DE")));
             SetParam("Date", DateTime.Now.ToString("yyyyMMdd"));
@@ -104,6 +114,13 @@ namespace PBE
             SetParam("ExportFilePrefix", DateTime.Now.ToString("yyyy-MM-dd") + "_");
             SetParam("Title", "Nachtlauf {DateTimeText}");
             SetParam("Machine", Environment.MachineName);
+        }
+
+        public ExecutableContainer(CommandLineOptions options)
+        {
+            this.PrintHeader(options);
+
+            XElement xe = XElement.Load(PBEContext.CurrentContext.ConfigFile);
 
             var xeFSVersions = xe.Element("FSVersions");
             if (xeFSVersions != null)
@@ -127,6 +144,8 @@ namespace PBE
 
             // parse Logflie
             this.Logfile = this.ParseParameters(xe.Attribute("Logfile").Value);
+            if (!Path.IsPathRooted(this.Logfile))
+                this.Logfile = Path.Combine(PBEContext.CurrentContext.LogFileDirectory, this.Logfile);
             System.IO.FileInfo fiLog = new System.IO.FileInfo(this.Logfile);
             fiLog.Directory.Create();
             this.Logfile = fiLog.FullName;
@@ -200,7 +219,7 @@ namespace PBE
         public string GetTempLogFile()
         {
             return System.IO.Path.Combine(
-                Program.Directory,
+                PBEContext.CurrentContext.LogFileDirectory,
                 Guid.NewGuid().ToString("N") + ".temp.log");
         }
 
@@ -289,7 +308,7 @@ namespace PBE
                 // HTML-Vorlage auslesen und initialisieren
                 if (htmlTemplate == null)
                 {
-                    htmlTemplate = File.ReadAllText(Path.Combine(Program.Directory, "LogTemplate.htm"));
+                    htmlTemplate = File.ReadAllText(Path.Combine(PBEContext.CurrentContext.LogFileDirectory, "LogTemplate.htm"));
                     htmlTemplate = this.ParseParameters(htmlTemplate);
 
                     // link auf die alte Logdatei einbauen
@@ -343,7 +362,7 @@ namespace PBE
 
         public void Execute()
         {
-            if (!Program.Automatic)
+            if (!PBEContext.CurrentContext.AutomaticMode)
             {
                 Console.WriteLine();
                 Console.WriteLine("Program was startet manually. For automatic mode e.g. in scheduled tasks");
@@ -364,13 +383,13 @@ namespace PBE
                 }
             }
 
-            rootAction.ApplyFilter(Program.TaskFilters);
+            rootAction.ApplyFilter(PBEContext.CurrentContext.TaskFilters);
 
             this.WriteToHtml();
 
             // Alle temporären Logfiles löschen
             File.Delete(this.Logfile);
-            foreach (var file in Directory.EnumerateFiles(Program.Directory, "*.temp.log"))
+            foreach (var file in Directory.EnumerateFiles(PBEContext.CurrentContext.LogFileDirectory, "*.temp.log"))
             {
                 File.Delete(file);
             }
