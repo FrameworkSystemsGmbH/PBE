@@ -96,7 +96,7 @@ namespace PBE
 
         public ExecutableContainer(XElement xe)
         {
-            Console.WriteLine("Anayze Parameters...");
+            Console.WriteLine("Analyze parameters...");
             SetParam("Weekday", DateTime.Now.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("de-DE")));
             SetParam("Date", DateTime.Now.ToString("yyyyMMdd"));
             SetParam("DateTime", DateTime.Now.ToString("yyyyMMdd-HHmmss"));
