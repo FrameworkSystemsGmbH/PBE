@@ -25,7 +25,7 @@ namespace PBE.CommandLineProcessor
 
             for (int i = 0; i < args.Length; i++)
             {
-                if ("/AUTO".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                if ("AUTO".Equals(args[i], StringComparison.OrdinalIgnoreCase))
                 {
                     modifiedArgs.Add("--auto");
                 }
