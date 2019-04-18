@@ -1,7 +1,6 @@
 ﻿using PBE.CommandLineProcessor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace PBE
@@ -22,7 +21,12 @@ namespace PBE
             this.AutomaticMode = options.Automatic;
             this.TaskFilters = new HashSet<string>(options.Filter);
             this.ConfigFile = GetPath(options.ConfigFilePath, "PBE.xml", true);
-            this.LogFileDirectory = GetPath(options.LogFileDirectory, Path.GetDirectoryName(options.ConfigFilePath), false);
+
+            // LogFile Directory aus den Options. Ansonsten wird das Verzeichnis der XML-Datei gezogen.
+            this.LogFileDirectory = GetPath(options.LogFileDirectory, Path.GetDirectoryName(this.ConfigFile), false);
+
+            // Wenn im LogDir ein Template liegt, dieses nehmen, ansonsten aus dem Programm-Verzeichnis.
+            this.LogFileTemplate = GetPath(Path.Combine(this.LogFileDirectory, "LogTemplate.htm"), "LogTemplate.htm", true);
         }
 
         private string GetPath(string optionPath, string defaultPath, bool bIsFile)
@@ -37,10 +41,10 @@ namespace PBE
                 fsi = new DirectoryInfo(fileName);
 
             if (fsi == null)
-                throw new FileNotFoundException("File not found or not accessible", fileName);
+                throw new FileNotFoundException($"File not found or not accessible: {fileName}", fileName);
 
             if (bIsFile && !(fsi is FileInfo))
-                throw new InvalidOperationException(String.Format("'{0}' is not a file", fileName));
+                throw new InvalidOperationException($"'{fileName}' is not a file");
 
             return fsi.FullName;
         }
@@ -49,5 +53,6 @@ namespace PBE
         public string Filter { get; private set; }
         public string ConfigFile { get; private set; }
         public string LogFileDirectory { get; private set; }
+        public string LogFileTemplate { get; private set; }
     }
 }

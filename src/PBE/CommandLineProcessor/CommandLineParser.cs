@@ -1,9 +1,6 @@
 ﻿using CommandLine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PBE.CommandLineProcessor
 {
@@ -23,25 +20,28 @@ namespace PBE.CommandLineProcessor
 
         private static string[] ModifyLegacyOptions(string[] args)
         {
-            List<string> modifiedArgs = new List<string>(args.Length);
+            List<string> modifiedArgs = new List<string>();
             List<string> filters = new List<string>();
 
             for (int i = 0; i < args.Length; i++)
             {
-                bool bIsAutomaticArg = "/AUTO".Equals(args[i], StringComparison.OrdinalIgnoreCase);
-                bool bIsFilterArg = "/FILTER".Equals(args[i], StringComparison.OrdinalIgnoreCase);
-
-                if (bIsAutomaticArg) args[i] = "--auto";
-
-                if (!bIsFilterArg)
+                if ("AUTO".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    modifiedArgs.Add("--auto");
+                }
+                else if ("/FILTER".Equals(args[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    if (i <= args.Length)
+                    {
+                        filters.Add(args[++i]);
+                    }
+                }
+                else
                 {
                     modifiedArgs.Add(args[i]);
                 }
-                else if (i <= args.Length)
-                {
-                    filters.Add(args[++i]);
-                }
             }
+
             if (filters.Count > 0)
             {
                 modifiedArgs.Add("--filter");

@@ -11,7 +11,7 @@ namespace PBE
         // bei der Abarbeitung dann aufruft. In der Bedingung in der PBE-Konfiguration ist
         // der hier angegebene Schlüssel mit dem Prefix '#' zu versehen. Groß-/Kleinschreibung
         // spielt keine Rolle
-        private IDictionary<string, Func<string, string>> FuncCache = new Dictionary<string, Func<string, string>>
+        private IDictionary<string, Func<string, string>> FuncCache = new Dictionary<string, Func<string, string>>(StringComparer.OrdinalIgnoreCase)
         {
             ["EXISTS"] = ExistsMethod
         };
@@ -58,9 +58,8 @@ namespace PBE
                 string info = ShouldExecute ? "(Execute)" : "(Skip)";
                 string value = this.Value;
                 if (this.IsMethodCall)
-                    value = String.Format("{0} -> {1}", this.ValueOrg, value);
-                return String.Format("Condition {0} \"{1}\" == \"{2}\" ({3})"
-                    , conditionName, this.Value, this.EqualsValue, info);
+                    value = $"{this.ValueOrg} -> {value}";
+                return $"Condition {conditionName} \"{this.Value}\" == \"{this.EqualsValue}\" ({info})";
             }
         }
 
@@ -87,9 +86,8 @@ namespace PBE
         /// <returns>Das Ergebnis der Funktion als string</returns>
         private string CallMethod(string function, string value)
         {
-            function = function.ToUpper();
             if (!FuncCache.ContainsKey(function))
-                throw new ArgumentException(string.Format("Scriptmethod '{0}' does not exist, check yout syntax.", function));
+                throw new ArgumentException($"Scriptmethod '{function}' does not exist, check yout syntax.");
             return FuncCache[function](value);
         }
 

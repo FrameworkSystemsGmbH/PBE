@@ -308,7 +308,7 @@ namespace PBE
                 // HTML-Vorlage auslesen und initialisieren
                 if (htmlTemplate == null)
                 {
-                    htmlTemplate = File.ReadAllText(Path.Combine(PBEContext.CurrentContext.LogFileDirectory, "LogTemplate.htm"));
+                    htmlTemplate = File.ReadAllText(PBEContext.CurrentContext.LogFileTemplate);
                     htmlTemplate = this.ParseParameters(htmlTemplate);
 
                     // link auf die alte Logdatei einbauen
@@ -366,7 +366,7 @@ namespace PBE
             {
                 Console.WriteLine();
                 Console.WriteLine("Program was startet manually. For automatic mode e.g. in scheduled tasks");
-                Console.WriteLine("specify argument \"auto\". Example: PBE.exe auto");
+                Console.WriteLine("specify argument --auto. Example: PBE.exe --auto");
                 Console.WriteLine();
                 Console.WriteLine("Press ENTER to continue or ESC to exit.");
                 while (true)
