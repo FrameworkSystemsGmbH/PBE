@@ -31,7 +31,7 @@ namespace PBE.CommandLineProcessor
                 }
                 else if ("/FILTER".Equals(args[i], StringComparison.OrdinalIgnoreCase))
                 {
-                    if (i <= args.Length)
+                    if (i < args.Length-1)
                     {
                         filters.Add(args[++i]);
                     }
