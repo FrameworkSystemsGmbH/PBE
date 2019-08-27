@@ -53,7 +53,7 @@ namespace PBE
             get
             {
                 string conditionName = this.Name;
-                if (!string.IsNullOrEmpty(conditionName))
+                if (string.IsNullOrWhiteSpace(conditionName))
                     conditionName = "[unnamed]";
                 string info = ShouldExecute ? "(Execute)" : "(Skip)";
                 string value = this.Value;
