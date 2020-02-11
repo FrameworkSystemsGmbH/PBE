@@ -1,4 +1,5 @@
 ﻿using PBE.CommandLineProcessor;
+using PBE.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -314,7 +315,7 @@ namespace PBE
                     // link auf die alte Logdatei einbauen
                     if (File.Exists(this.Logfile))
                     {
-                        String oldLogfile = File.ReadAllText(this.Logfile);
+                        String oldLogfile = ParallelHelper.FileReadAllText(this.Logfile);
                         Regex reg = new Regex("[<]!-- Archive: (?<file>[^>]*) --[>]");
                         var match = reg.Match(oldLogfile);
                         if (match != null)
@@ -417,7 +418,7 @@ namespace PBE
             {
                 this.WriteToHtml();
                 // 5 Sekunden warten
-                for (int waitcount = 0; waitcount < 500 && htmlThreadRunning; waitcount++)
+                for (int waitcount = 0; waitcount < 1000 && htmlThreadRunning; waitcount++)
                 {
                     System.Threading.Thread.Sleep(10);
                 }

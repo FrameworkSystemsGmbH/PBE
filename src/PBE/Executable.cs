@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PBE.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -106,7 +107,7 @@ namespace PBE
                         try
                         {
                             tries--;
-                            this.LogDetails = File.ReadAllText(this.LogFile);
+                            this.LogDetails = ParallelHelper.FileReadAllText(this.LogFile);
                             tries = 0;
                         }
                         catch { System.Threading.Thread.Sleep(50); }
@@ -170,7 +171,7 @@ namespace PBE
                         try
                         {
                             tries--;
-                            this.LogDetails = File.ReadAllText(this.LogFile);
+                            this.LogDetails = ParallelHelper.FileReadAllText(this.LogFile);
                             tries = 0;
                         }
                         catch { }
@@ -190,7 +191,7 @@ namespace PBE
                             try
                             {
                                 tries--;
-                                string subText = File.ReadAllText(file.FullName);
+                                string subText = ParallelHelper.FileReadAllText(file.FullName);
                                 tries = 0;
                                 this.LogDetailsSub += Environment.NewLine +
                                     "=================== " + file.Name + " ===================" +
