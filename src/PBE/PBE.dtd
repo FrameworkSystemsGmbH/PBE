@@ -41,6 +41,7 @@
 <!ATTLIST CompileRun Rep CDATA #REQUIRED>
 <!ATTLIST CompileRun Run CDATA #REQUIRED>
 <!ATTLIST CompileRun MaxParallel CDATA "">
+<!ATTLIST CompileRun DeleteCompileDir (0|1) #IMPLIED>
 
 <!ELEMENT Export EMPTY>
 <!ATTLIST Export Name CDATA "">
