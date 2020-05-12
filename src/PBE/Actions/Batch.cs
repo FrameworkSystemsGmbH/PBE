@@ -15,11 +15,29 @@ namespace PBE.Actions
             : base(xe, container, indent)
         {
             this.Cmd = container.ParseParameters(xe.Attribute("Cmd").Value);
+
+            string args = null;
             var attrArgs = xe.Attribute("Args");
             if (attrArgs != null)
             {
-                this.Args = container.ParseParameters(attrArgs.Value);
+                args = container.ParseParameters(attrArgs.Value);
             }
+
+            var xeArgs = xe.Element("Args");
+            if (xeArgs != null)
+            {
+                var elementArgs = FSUtils.EscapeCommandLineArgs(xeArgs.Elements("Arg")
+                    .Select(xeArg => container.ParseParameters(xeArg.Value)));
+                if (!string.IsNullOrWhiteSpace(elementArgs))
+                {
+                    if (!string.IsNullOrWhiteSpace(args))
+                        args += " " + elementArgs;
+                    else
+                        args = elementArgs;
+                }
+            }
+
+            this.Args = args;
 
             this.LogDetails += Cmd + " " + this.Args + Environment.NewLine +
                 "-----------------------" + Environment.NewLine;

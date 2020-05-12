@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PBE.Utils
 {
@@ -56,5 +59,58 @@ namespace PBE.Utils
                 this.mutex.Dispose();
             }
         }
+
+        #region EscapeCommandLineArgs
+
+        private static readonly Regex cmdEscape_InvalidChar = new Regex("[\x00\x0a\x0d]", RegexOptions.Compiled); //  these can not be escaped
+        private static readonly Regex cmdEscape_needsQuotes = new Regex(@"\s|""", RegexOptions.Compiled); //          contains whitespace or two quote characters
+        private static readonly Regex cmdEscape_escapeQuote = new Regex(@"(\\*)(""|$)", RegexOptions.Compiled); //    one or more '\' followed with a quote or end of string
+
+        /// <summary>
+        /// Wandelt den übergebenen String so um dass er als Command-Line-Argument verwendet werden kann.
+        /// Dabei werden Leerzeichen, \ und " escaped.
+        /// </summary>
+        public static string EscapeCommandLineArgs(string arg)
+        {
+            if (string.IsNullOrEmpty(arg))
+                return "\"\"";
+
+            if (cmdEscape_InvalidChar.IsMatch(arg))
+                throw new ArgumentOutOfRangeException("arg", "Argument contains invalid chars");
+
+            if (!cmdEscape_needsQuotes.IsMatch(arg))
+                return arg;
+
+            return "\"" +
+                cmdEscape_escapeQuote.Replace(arg, m =>
+                    m.Groups[1].Value + m.Groups[1].Value + (m.Groups[2].Value == "\"" ? "\\\"" : "")) +
+                "\"";
+        }
+
+        /// <summary>
+        /// Wandelt die ünergebenen String-Argumente in einen string mit Command-Line-Arguments um.
+        /// Dabei werden Leerzeichen, \ und " escaped.
+        /// </summary>
+        public static string EscapeCommandLineArgs(IEnumerable<string> args)
+        {
+            if (args == null)
+                return "";
+
+            return string.Join(" ", args.Select(EscapeCommandLineArgs));
+        }
+
+        /// <summary>
+        /// Wandelt die ünergebenen String-Argumente in einen string mit Command-Line-Arguments um.
+        /// Dabei werden Leerzeichen, \ und " escaped.
+        /// </summary>
+        public static string EscapeCommandLineArgs(params string[] args)
+        {
+            if (args == null)
+                return "";
+
+            return string.Join(" ", args.Select(EscapeCommandLineArgs));
+        }
+
+        #endregion EscapeCommandLineArgs
     }
 }
