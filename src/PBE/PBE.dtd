@@ -24,10 +24,10 @@
 <!ATTLIST Parallel Name CDATA "">
 <!ATTLIST Parallel MaxTasks CDATA "">
 
-<!ELEMENT Batch EMPTY>
 <!ELEMENT Batch (Args?)>
 <!ATTLIST Batch Name CDATA "">
 <!ATTLIST Batch Cmd CDATA #REQUIRED>
+<!ATTLIST Batch Directory CDATA "">
 <!ATTLIST Batch Args CDATA "">
 
 <!ELEMENT Args (Arg*)>
