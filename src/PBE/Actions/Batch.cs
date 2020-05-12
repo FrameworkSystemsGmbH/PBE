@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PBE.Utils;
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace PBE.Actions
@@ -18,6 +20,9 @@ namespace PBE.Actions
             {
                 this.Args = container.ParseParameters(attrArgs.Value);
             }
+
+            this.LogDetails += Cmd + " " + this.Args + Environment.NewLine +
+                "-----------------------" + Environment.NewLine;
         }
 
         public override string Description
@@ -38,13 +43,33 @@ namespace PBE.Actions
             {
                 FileName = this.Cmd,
                 Arguments = this.Args,
-                WindowStyle = ProcessWindowStyle.Minimized
+                WindowStyle = ProcessWindowStyle.Minimized,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
             };
             Process proc = new Process();
             proc.StartInfo = startInfo;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.StartInfo.UseShellExecute = false;
+
+            proc.OutputDataReceived += Proc_DataReceived;
+            proc.ErrorDataReceived += Proc_DataReceived;
 
             proc.Start();
             proc.WaitForExit();
+
+            if (proc.ExitCode != 0)
+                this.TaskFailed = true;
+        }
+
+        private void Proc_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            lock (this)
+            {
+                this.LogDetails += e.Data;
+            }
         }
     }
 }
