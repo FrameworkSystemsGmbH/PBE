@@ -21,10 +21,10 @@ namespace PBE.Actions
             // nicht parsen - wird erst im Execute geparsed
             this.Rep = xe.Attribute("Rep").Value;
 
-            var attrArgs = xe.Attribute("Args");
-            if (attrArgs != null)
+            var arguments = ParseArgs(xe, container);
+            if (!string.IsNullOrEmpty(arguments))
             {
-                this.Arguments = container.ParseParameters(attrArgs.Value);
+                this.Arguments = arguments;
             }
         }
 

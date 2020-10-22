@@ -33,7 +33,7 @@
 <!ELEMENT Args (Arg*)>
 <!ELEMENT Arg (#PCDATA)>
 
-<!ELEMENT FSConsole EMPTY>
+<!ELEMENT FSConsole (Args?)>
 <!ATTLIST FSConsole Name CDATA "">
 <!ATTLIST FSConsole FS (4.3.0.0|4.2.0.0|4.0.0.0|3.11.0.0|3.10.0.0|3.9.0.0|3.8.0.0|3.7.0.0|3.6.0.0|3.5.0.0|3.4.0.0|3.3.0.0|3.2.0.0) #REQUIRED>
 <!ATTLIST FSConsole Rep CDATA #REQUIRED>
@@ -104,14 +104,16 @@
 <!ATTLIST Publish2Go Version CDATA #REQUIRED>
 <!ATTLIST Publish2Go Setting CDATA #REQUIRED>
 
-<!ELEMENT ExportDoc EMPTY>
+<!ELEMENT ExportDoc (Args?)>
 <!ATTLIST ExportDoc Name CDATA "">
 <!ATTLIST ExportDoc FS (4.3.0.0|4.2.0.0|4.0.0.0|3.11.0.0) #REQUIRED>
 <!ATTLIST ExportDoc Rep CDATA #REQUIRED>
 <!ATTLIST ExportDoc Package CDATA #REQUIRED>
 <!ATTLIST ExportDoc Version CDATA #REQUIRED>
 <!ATTLIST ExportDoc Iso CDATA #REQUIRED>
+<!ATTLIST ExportDoc ExportDBTables CDATA #FIXED "1">
 <!ATTLIST ExportDoc Dir CDATA "">
+<!ATTLIST ExportDoc Args CDATA "">
 
 <!ELEMENT MD EMPTY>
 <!ATTLIST MD Name CDATA "">
