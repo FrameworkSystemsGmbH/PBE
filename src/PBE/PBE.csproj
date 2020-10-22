@@ -84,6 +84,9 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="App.config" />
+    <None Include="Online-Dokumentation.url">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="PBE.dtd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
