@@ -54,6 +54,7 @@
     <Compile Include="Actions\Batch.cs" />
     <Compile Include="Actions\CompileRun.cs" />
     <Compile Include="Actions\ExportDoc.cs" />
+    <Compile Include="Actions\Publish4Cloud.cs" />
     <Compile Include="Actions\Publish2Go.cs" />
     <Compile Include="Actions\Export.cs" />
     <Compile Include="Actions\FSConsole.cs" />
