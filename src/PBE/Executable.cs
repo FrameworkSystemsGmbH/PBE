@@ -352,6 +352,9 @@ namespace PBE
                 case "Publish2Go":
                     return new Actions.Publish2Go(xe, container, indent);
 
+                case "Publish4Cloud":
+                    return new Actions.Publish4Cloud(xe, container, indent);
+
                 case "ExportDoc":
                     return new Actions.ExportDoc(xe, container, indent);
 
