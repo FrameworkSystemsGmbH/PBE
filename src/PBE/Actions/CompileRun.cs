@@ -38,8 +38,11 @@ namespace PBE.Actions
             bool fsVerOk = System.Version.TryParse(this.FSVersion, out fsVer);
             if (this.FSVer >= new System.Version(3, 4))
             {
-                // Dieser Parameter steht seit FS 3.4 zur Verfügung
-                this.Arguments += " \\DELETECOMPILEDIR";
+                if ((bool?)xe.Attribute("DeleteCompileDir") != false)
+                {
+                    // Dieser Parameter steht seit FS 3.4 zur Verfügung
+                    this.Arguments += " \\DELETECOMPILEDIR";
+                }
             }
             else
             {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -351,6 +352,9 @@ namespace PBE
                 case "Publish2Go":
                     return new Actions.Publish2Go(xe, container, indent);
 
+                case "Publish4Cloud":
+                    return new Actions.Publish4Cloud(xe, container, indent);
+
                 case "ExportDoc":
                     return new Actions.ExportDoc(xe, container, indent);
 
@@ -359,6 +363,38 @@ namespace PBE
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Liest die Argumente ein.
+        /// </summary>
+        /// <param name="xe"></param>
+        /// <returns></returns>
+        protected static string ParseArgs(XElement xe, ExecutableContainer container)
+        {
+            string args = null;
+
+            var attrArgs = xe.Attribute("Args");
+            if (attrArgs != null)
+            {
+                args = container.ParseParameters(attrArgs.Value);
+            }
+
+            var xeArgs = xe.Element("Args");
+            if (xeArgs != null)
+            {
+                var elementArgs = FSUtils.EscapeCommandLineArgs(xeArgs.Elements("Arg")
+                    .Select(xeArg => container.ParseParameters(xeArg.Value)));
+                if (!string.IsNullOrWhiteSpace(elementArgs))
+                {
+                    if (!string.IsNullOrWhiteSpace(args))
+                        args += " " + elementArgs;
+                    else
+                        args = elementArgs;
+                }
+            }
+
+            return args;
         }
     }
 }

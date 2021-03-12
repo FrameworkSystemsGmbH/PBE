@@ -174,6 +174,9 @@ namespace PBE
 
         public string ParseParameters(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+                return value;
+            
             return Regex.Replace(value, "{(?<name>[^}]*)}", (match) =>
             {
                 string key = match.Groups["name"].Value;
