@@ -12,15 +12,15 @@
 <!ATTLIST Param Name CDATA #REQUIRED>
 <!ATTLIST Param Value CDATA #REQUIRED>
 
-<!ELEMENT Sequence ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD)*)>
+<!ELEMENT Sequence ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|Publish4Cloud|ExportDoc|MD|RD)*)>
 <!ATTLIST Sequence Name CDATA "">
 
-<!ELEMENT Condition ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD)*)>
+<!ELEMENT Condition ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|Publish4Cloud|ExportDoc|MD|RD)*)>
 <!ATTLIST Condition Name CDATA "">
 <!ATTLIST Condition Value CDATA #REQUIRED>
 <!ATTLIST Condition Equals CDATA #REQUIRED>
 
-<!ELEMENT Parallel ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|ExportDoc|MD|RD|ImportQueue)*)>
+<!ELEMENT Parallel ((Batch|FSConsole|Sequence|Parallel|Condition|CompileRun|Export|ApprovedExport|Import|ApprovedImport|Publish|Publish2Go|Publish4Cloud|ExportDoc|MD|RD|ImportQueue)*)>
 <!ATTLIST Parallel Name CDATA "">
 <!ATTLIST Parallel MaxTasks CDATA "">
 
