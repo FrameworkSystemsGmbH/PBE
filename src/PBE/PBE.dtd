@@ -122,6 +122,8 @@
 <!ATTLIST ExportDoc ExportDBTables CDATA #FIXED "1">
 <!ATTLIST ExportDoc Dir CDATA "">
 <!ATTLIST ExportDoc Args CDATA "">
+<!ATTLIST ExportDoc UseLicense CDATA #FIXED "1">
+<!ATTLIST ExportDoc Setting CDATA "">
 
 <!ELEMENT MD EMPTY>
 <!ATTLIST MD Name CDATA "">

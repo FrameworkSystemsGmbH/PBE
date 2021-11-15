@@ -1,4 +1,5 @@
 ﻿using PBE.Utils;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,10 @@ namespace PBE.Actions
         public String Iso { get; private set; }
         public bool ExportDBTables { get; private set; }
         public String Dir { get; private set; }
-        protected virtual string ExportDirParameter { get { return "ExportDir"; } }
+        protected virtual string ExportDirParameter
+        { get { return "ExportDir"; } }
+        public bool UseLicense { get; set; }
+        public string Setting { get; set; }
 
         public ExportDoc(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
@@ -22,6 +26,9 @@ namespace PBE.Actions
             this.Version = container.ParseParameters(xe.Attribute("Version").Value);
             this.Iso = container.ParseParameters(xe.Attribute("Iso").Value);
             this.ExportDBTables = (string)xe.Attribute("ExportDBTables") == "1";
+            this.UseLicense = (string)xe.Attribute("UseLicense") == "1";
+            this.Setting = container.ParseParameters(xe.Attribute("Setting")?.Value);
+
             var xaDir = xe.Attribute("Dir");
             if (xaDir != null)
             {
@@ -42,6 +49,13 @@ namespace PBE.Actions
                 @"\ISO", this.Iso,
                 @"\OUTPUT", folder
             };
+
+            if (UseLicense)
+            {
+                args.Add(@"\USELICENSE");
+                args.Add(@"\SETTING");
+                args.Add(this.Setting);
+            }
 
             if (ExportDBTables)
             {
