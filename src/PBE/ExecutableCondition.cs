@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace PBE
 {
@@ -13,7 +14,8 @@ namespace PBE
         // spielt keine Rolle
         private IDictionary<string, Func<string, string>> FuncCache = new Dictionary<string, Func<string, string>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["EXISTS"] = ExistsMethod
+            ["EXISTS"] = ExistsMethod,
+            ["CONTAINS_FILES"] = ContainsFilesMethod
         };
 
         public ExecutableCondition(XElement xe, ExecutableContainer container, int indent)
@@ -100,6 +102,17 @@ namespace PBE
         {
             bool bResult = File.Exists(value) || Directory.Exists(value);
             return bResult.ToString();
+        }
+
+        /// <summary>
+        /// Prüft ob das angegebene Verzeichnis nicht leer ist.
+        /// </summary>
+        /// <param name="value">Pfad zu einem Verzeichnis.</param>
+        /// <returns>"True" wenn das Verzeichnis Dateien enthält. "False" wenn das Verzeichnis leer ist, oder nicht existiert.</returns>
+        private static string ContainsFilesMethod(string value)
+        {
+            return (Directory.Exists(value) 
+                && Directory.EnumerateFiles(value).Any()).ToString();
         }
     }
 }
