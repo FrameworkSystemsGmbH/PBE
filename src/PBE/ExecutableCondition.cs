@@ -98,7 +98,8 @@ namespace PBE
         /// <returns>"True" wenn die Datei existiert, "False" wenn die Datei nicht existiert.</returns>
         private static string ExistsMethod(string value)
         {
-            return File.Exists(value).ToString();
+            bool bResult = File.Exists(value) || Directory.Exists(value);
+            return bResult.ToString();
         }
     }
 }
