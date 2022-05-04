@@ -38,7 +38,7 @@ namespace PBE
             // Wenn die Condition nicht stimmt, dann die ActionList leeren, damit auch nichts ausgeführt wird.
             // Bei Methoden (starten mit '#') gilt das nicht, da der Auswertungszeitpunkt erst zur Ausführung
             // der Aktion ist.
-            if (this.Value != this.EqualsValue && !this.Value.StartsWith("#"))
+            if (this.Value != this.EqualsValue && !this.IsMethodCall)
             {
                 this.ActionList.Clear();
             }
@@ -48,7 +48,7 @@ namespace PBE
         public string Value { get; private set; }
         public bool IsMethodCall { get; private set; }
         public string EqualsValue { get; private set; }
-        public bool ShouldExecute { get { return this.Value == this.EqualsValue; } }
+        public bool ShouldExecute { get { return this.Value == this.EqualsValue || this.IsMethodCall; } }
 
         public override string Description
         {
@@ -57,11 +57,13 @@ namespace PBE
                 string conditionName = this.Name;
                 if (string.IsNullOrWhiteSpace(conditionName))
                     conditionName = "[unnamed]";
-                string info = ShouldExecute ? "(Execute)" : "(Skip)";
+                string info = this.ShouldExecute ? "Execute" : "Skip";
+                if (this.IsMethodCall)
+                    info += ", late evaluation)";
                 string value = this.Value;
                 if (this.IsMethodCall)
                     value = $"{this.ValueOrg} -> {value}";
-                return $"Condition {conditionName} \"{this.Value}\" == \"{this.EqualsValue}\" ({info})";
+                return $"Condition {conditionName} \"{value}\" == \"{this.EqualsValue}\" ({info})";
             }
         }
 
