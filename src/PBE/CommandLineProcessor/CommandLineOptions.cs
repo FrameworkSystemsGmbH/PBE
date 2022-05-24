@@ -18,5 +18,7 @@ namespace PBE.CommandLineProcessor
 
         [Option('f', "filter", Required = false, HelpText = "Set filter. Multiple filters are separated with ':'. Example: --filter Task1:Task2", Separator = CommandLineOptions.SEPARATOR)]
         public IEnumerable<string> Filter { get; set; }
+        [Option('p', "param", Required = false, HelpText = "Set parameter. Multiple parameters are separated with ':'. Example: --parameter VERSION=4.0.1:PACKAGE=Cons1", Separator = CommandLineOptions.SEPARATOR)]
+        public IEnumerable<string> Parameters { get; set; }
     }
 }

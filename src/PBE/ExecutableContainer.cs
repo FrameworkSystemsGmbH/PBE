@@ -142,7 +142,18 @@ namespace PBE
             {
                 SetParam(xeParam.Attribute("Name").Value, xeParam.Attribute("Value").Value);
             }
-
+            // Override Parameters from commandline
+            if (options.Parameters.Count() > 0)
+            { 
+                Console.WriteLine("Setting/overriding parameters from command line...");
+                foreach (string param in options.Parameters)
+                {
+                    if (!param.Contains("="))
+                        continue;
+                    string[] paramSet = param.Split(new char[] { '=' }, 2);
+                    SetParam(paramSet[0], paramSet[1]);
+                }
+            }
             // parse Logflie
             this.Logfile = this.ParseParameters(xe.Attribute("Logfile").Value);
             if (!Path.IsPathRooted(this.Logfile))
