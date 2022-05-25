@@ -27,6 +27,15 @@ namespace PBE
 
             // Wenn im LogDir ein Template liegt, dieses nehmen, ansonsten aus dem Programm-Verzeichnis.
             this.LogFileTemplate = GetPath(Path.Combine(this.LogFileDirectory, "LogTemplate.htm"), "LogTemplate.htm", true);
+
+            this.Parameters = new Dictionary<string, string>();
+            foreach (string param in options.Parameters)
+            {
+                if (!param.Contains("="))
+                    continue;
+                string[] paramSet = param.Split(new char[] { '=' }, 2);
+                this.Parameters.Add(paramSet[0], paramSet[1]);
+            }
         }
 
         private string GetPath(string optionPath, string defaultPath, bool bIsFile)
@@ -54,5 +63,7 @@ namespace PBE
         public string ConfigFile { get; private set; }
         public string LogFileDirectory { get; private set; }
         public string LogFileTemplate { get; private set; }
+
+        public IDictionary<string, string> Parameters { get; private set; }
     }
 }

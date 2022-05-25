@@ -136,24 +136,13 @@ namespace PBE
                     }
                 }
             }
-
+            
             var xeParams = xe.Element("Params");
             foreach (var xeParam in xeParams.Elements("Param"))
             {
                 SetParam(xeParam.Attribute("Name").Value, xeParam.Attribute("Value").Value);
             }
-            // Override Parameters from commandline
-            if (options.Parameters.Count() > 0)
-            { 
-                Console.WriteLine("Setting/overriding parameters from command line...");
-                foreach (string param in options.Parameters)
-                {
-                    if (!param.Contains("="))
-                        continue;
-                    string[] paramSet = param.Split(new char[] { '=' }, 2);
-                    SetParam(paramSet[0], paramSet[1]);
-                }
-            }
+            
             // parse Logflie
             this.Logfile = this.ParseParameters(xe.Attribute("Logfile").Value);
             if (!Path.IsPathRooted(this.Logfile))
@@ -179,8 +168,18 @@ namespace PBE
 
         private void SetParam(string name, string value)
         {
+            string message = string.Empty;
             Parameters[name] = ParseParameters(value);
-            Console.WriteLine("  " + name + " = " + value);
+            if (PBEContext.CurrentContext.Parameters.ContainsKey(name))
+            {
+                value = PBEContext.CurrentContext.Parameters[name];
+                message = $"Override: {Parameters[name]} -> {value}";
+                Parameters[name] = ParseParameters(value);
+            }
+            Console.Write($"  {name} = {value}");
+            if (message != string.Empty)
+                Console.Write($" ({message})");
+            Console.WriteLine();
         }
 
         public string ParseParameters(string value)
