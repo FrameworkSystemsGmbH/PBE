@@ -114,7 +114,7 @@ namespace PBE
         private static string ContainsFilesMethod(string value)
         {
             return (Directory.Exists(value) 
-                && Directory.EnumerateFiles(value).Any()).ToString();
+                && Directory.EnumerateFileSystemEntries(value).Any()).ToString();
         }
     }
 }
