@@ -31,7 +31,8 @@ namespace PBE.Actions
             }
             Package = container.ParseParameters(xe.Attribute("Package").Value);
             Version = container.ParseParameters(xe.Attribute("Version").Value);
-            ExportFileName = container.ParseParameters(xe.Attribute("ExportFileName").Value);
+            var xaExportFileName = xe.Attribute("ExportFileName");
+            ExportFileName = xaExportFileName != null ? container.ParseParameters(xaExportFileName.Value) : null;
             var attrMode = xe.Attribute("Mode");
 
             if (attrMode != null)
