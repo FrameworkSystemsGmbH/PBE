@@ -1,4 +1,4 @@
-﻿using PBE.Utils;
+using PBE.Utils;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -71,11 +71,21 @@ namespace PBE.Actions
 
             if (proc.ExitCode != 0)
             {
-                LogDetails += "====================="
-                    + Environment.NewLine
-                    + "ExitCode: " + proc.ExitCode;
+                if (this.Cmd == "robocopy" && proc.ExitCode < 8)
+                {
+                    //Robocopy ab ExitCode 8 wird als Fehler betrachtet
+                    LogDetails += "====================="
+                        + Environment.NewLine
+                        + "ExitCode: " + proc.ExitCode;
+                }
+                else
+                {
+                    LogDetails += "====================="
+                        + Environment.NewLine
+                        + "ExitCode: " + proc.ExitCode;
 
-                this.TaskFailed = true;
+                    this.TaskFailed = true;
+                }
             }
         }
 
