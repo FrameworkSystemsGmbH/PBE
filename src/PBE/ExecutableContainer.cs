@@ -184,7 +184,7 @@ namespace PBE
                 string replaced;
                 if (this.Parameters.TryGetValue(key, out replaced))
                 {
-                    return replaced;
+                    return this.ParseParameters(replaced);
                 }
                 else
                 {
