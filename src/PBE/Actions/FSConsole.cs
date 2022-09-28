@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
@@ -10,7 +10,7 @@ namespace PBE.Actions
         public FSConsole(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
         {
-            this.FSVersion = xe.Attribute("FS").Value;
+            this.FSVersion = container.ParseParameters(xe.Attribute("FS").Value);
 
             System.Version fsVer;
             if (System.Version.TryParse(this.FSVersion, out fsVer))
