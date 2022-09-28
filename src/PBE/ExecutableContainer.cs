@@ -193,26 +193,30 @@ namespace PBE
             });
         }
 
-        public string CreateExportFileName(string package, string version, string fsVersion = null)
+        public string CreateExportFileName(string package, string version, string fsVersion = null, string fileNameP = null)
         {
-            string fileName = package;
-            if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
+            string fileName = fileNameP;
+            if (fileNameP == null)
             {
-                fileName = "eNVenta";
-            }
-            fileName = "{ExportFilePrefix}" + fileName + "_" + version;
-            if (!String.IsNullOrEmpty(fsVersion))
-            {
-                Version fsver = Version.Parse(fsVersion);
-                int fieldCount = 4;
-                if (fsver.Revision == 0)
+                fileName = package;
+                if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
                 {
-                    fieldCount = 3;
-                    if (fsver.Build == 0)
-                        fieldCount = 2;
+                    fileName = "eNVenta";
                 }
+                fileName = "{ExportFilePrefix}" + fileName + "_" + version;
+                if (!String.IsNullOrEmpty(fsVersion))
+                {
+                    Version fsver = Version.Parse(fsVersion);
+                    int fieldCount = 4;
+                    if (fsver.Revision == 0)
+                    {
+                        fieldCount = 3;
+                        if (fsver.Build == 0)
+                            fieldCount = 2;
+                    }
 
-                fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+                    fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+                }
             }
             return ParseParameters(fileName);
         }
