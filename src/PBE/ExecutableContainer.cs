@@ -170,9 +170,9 @@ namespace PBE
         {
             string message = string.Empty;
             Parameters[name] = ParseParameters(value);
-            if (PBEContext.CurrentContext.Parameters.ContainsKey(name))
+            if (PBEContext.CurrentContext.Parameters.TryGetValue(name, out var paramValue) && paramValue != value)
             {
-                value = PBEContext.CurrentContext.Parameters[name];
+                value = paramValue;
                 message = $"Override: {Parameters[name]} -> {value}";
                 Parameters[name] = ParseParameters(value);
             }

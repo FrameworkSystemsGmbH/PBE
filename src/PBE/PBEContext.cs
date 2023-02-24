@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PBE
 {
@@ -29,12 +30,23 @@ namespace PBE
             this.LogFileTemplate = GetPath(Path.Combine(this.LogFileDirectory, "LogTemplate.htm"), "LogTemplate.htm", true);
 
             this.Parameters = new Dictionary<string, string>();
-            foreach (string param in options.Parameters)
+            if (!string.IsNullOrWhiteSpace(options.Parameters))
             {
-                if (!param.Contains("="))
-                    continue;
-                string[] paramSet = param.Split(new char[] { '=' }, 2);
-                this.Parameters.Add(paramSet[0], paramSet[1]);
+                var escaped = options.Parameters
+                    .Replace("*", "*star*")
+                    .Replace(";;", "*semikolon*");
+
+                var parts = escaped.Split(';').Select(s => s.Replace("*semikolon*", ";").Replace("*star*", "*")).ToArray();
+                foreach(var part in parts)
+                {
+                    var equalIndex = part.IndexOf('=');
+                    if (equalIndex > 0)
+                    {
+                        var paramName = part.Substring(0, equalIndex).Trim();
+                        var paramValue = part.Substring(equalIndex+ 1);
+                        this.Parameters.Add(paramName, paramValue);
+                    }
+                }
             }
         }
 

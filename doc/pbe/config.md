@@ -83,6 +83,9 @@ Darüber hinaus können auch eigene Parameter definiert werden. So können z.B. 
 
 Bei Parametern kann auch auf vorher definierte Parameter verwiesen werden – wie z.B. bei dem vordefinierten Parameter `Title`.
 
+> [!TIP]
+> Alle bekannten Parameter können der PBE.exe mit dem [Kommandozeilen-Parameter `-p` / `--param`](commandline-parameter.md#-p----param) übergeben und so "überschrieben" werden.
+
 ## Organisation
 
 Die Aktionen werden in der XML-Datei als Sequenzen oder Parallel-Verarbeitungen organisiert. Die unterschiedlichen Knoten können beliebig ineinander verschachtelt werden. Einzige Ausnahme ist der oberste Knoten – dieser muss immer `<Sequence>` sein.
