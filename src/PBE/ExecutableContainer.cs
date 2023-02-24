@@ -136,13 +136,13 @@ namespace PBE
                     }
                 }
             }
-            
+
             var xeParams = xe.Element("Params");
             foreach (var xeParam in xeParams.Elements("Param"))
             {
                 SetParam(xeParam.Attribute("Name").Value, xeParam.Attribute("Value").Value);
             }
-            
+
             // parse Logflie
             this.Logfile = this.ParseParameters(xe.Attribute("Logfile").Value);
             if (!Path.IsPathRooted(this.Logfile))
@@ -186,7 +186,7 @@ namespace PBE
         {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
-            
+
             return Regex.Replace(value, "{(?<name>[^}]*)}", (match) =>
             {
                 string key = match.Groups["name"].Value;
