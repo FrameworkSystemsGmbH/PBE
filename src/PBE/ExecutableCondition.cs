@@ -96,14 +96,13 @@ namespace PBE
         }
 
         /// <summary>
-        /// Prüft ob der angegebene Dateipfad existiert.
+        /// Prüft ob der angegebene Datei-/Verzeichnis-Pfad existiert.
         /// </summary>
-        /// <param name="value">Pfad zu einer Datei.</param>
-        /// <returns>"True" wenn die Datei existiert, "False" wenn die Datei nicht existiert.</returns>
+        /// <param name="value">Pfad zu einer Datei / einem Verzeichnis.</param>
+        /// <returns>"True" wenn die Datei / das Verzeichnis existiert, ansonsten "False".</returns>
         private static string ExistsMethod(string value)
         {
-            bool bResult = File.Exists(value) || Directory.Exists(value);
-            return bResult.ToString();
+            return (File.Exists(value) || Directory.Exists(value)).ToString();
         }
 
         /// <summary>
