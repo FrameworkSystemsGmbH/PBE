@@ -83,6 +83,9 @@ Darüber hinaus können auch eigene Parameter definiert werden. So können z.B. 
 
 Bei Parametern kann auch auf vorher definierte Parameter verwiesen werden – wie z.B. bei dem vordefinierten Parameter `Title`.
 
+> [!TIP]
+> Alle bekannten Parameter können der PBE.exe mit dem [Kommandozeilen-Parameter `-p` / `--param`](commandline-parameter.md#-p----param) übergeben und so "überschrieben" werden.
+
 ## Organisation
 
 Die Aktionen werden in der XML-Datei als Sequenzen oder Parallel-Verarbeitungen organisiert. Die unterschiedlichen Knoten können beliebig ineinander verschachtelt werden. Einzige Ausnahme ist der oberste Knoten – dieser muss immer `<Sequence>` sein.
@@ -122,15 +125,35 @@ Attribute:
 
 * **Equals**: erforderlich – gibt den Wert an, mit dem verglichen werden soll – z.B. `"So"`.
 
-Im Value kann eine Funktion `"#EXISTS(<dateipfad>)"` verwendet werden. Diese liefert den Wert `"True"` oder `"False"`. Der Dateipfad kann auch Parameter beinhalten.
+Im **Value** können verschiedene Funktionen verwendet werden:
 
-Beispiel:
+* `"#EXISTS(<dateipfad>)"`
 
-```xml
-<Condition Name="Prüfen ob Publish2Go existiert"
-        Value="#Exists({InputDir}\sqlitedb.p2go)"
-        Equals="True">
-```
+  Prüft, ob eine Datei oder ein Ordner existiert.
+  Diese Funktion liefert den Wert `"True"` oder `"False"`.
+  Der Dateipfad kann auch Parameter beinhalten.
+
+  Beispiel:
+
+  ```xml
+  <Condition Name="Prüfen ob Publish2Go existiert"
+          Value="#Exists({InputDir}\sqlitedb.p2go)"
+          Equals="True">
+  ```
+
+* `"#CONTAINS_FILES(<verzeichnispfad>)"`
+
+  Prüft, ob das Verzeichnis einen Inhalt hat.
+  Diese Funktion liefert `"True"`, wenn das Verzeichnis einen Inhalt (Datei / Verzeichnis) hat und `"False"` wenn es leer ist.
+  Der Verzeichnispfad kann auch Parameter beinhalten.
+
+  Beispiel:
+
+  ```xml
+  <Condition Name="Prüfen ob das Export-Verzeichnis leer ist"
+          Value="#CONTAINS_FILES({ExportDir}\Package2)"
+          Equals="False">
+  ```
 
 ### Knoten `<ImportQueue>`
 

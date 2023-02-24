@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace PBE
 {
@@ -13,7 +14,8 @@ namespace PBE
         // spielt keine Rolle
         private IDictionary<string, Func<string, string>> FuncCache = new Dictionary<string, Func<string, string>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["EXISTS"] = ExistsMethod
+            ["EXISTS"] = ExistsMethod,
+            ["CONTAINS_FILES"] = ContainsFilesMethod
         };
 
         public ExecutableCondition(XElement xe, ExecutableContainer container, int indent)
@@ -36,7 +38,7 @@ namespace PBE
             // Wenn die Condition nicht stimmt, dann die ActionList leeren, damit auch nichts ausgeführt wird.
             // Bei Methoden (starten mit '#') gilt das nicht, da der Auswertungszeitpunkt erst zur Ausführung
             // der Aktion ist.
-            if (this.Value != this.EqualsValue && !this.Value.StartsWith("#"))
+            if (this.Value != this.EqualsValue && !this.IsMethodCall)
             {
                 this.ActionList.Clear();
             }
@@ -46,7 +48,7 @@ namespace PBE
         public string Value { get; private set; }
         public bool IsMethodCall { get; private set; }
         public string EqualsValue { get; private set; }
-        public bool ShouldExecute { get { return this.Value == this.EqualsValue; } }
+        public bool ShouldExecute { get { return this.Value == this.EqualsValue || this.IsMethodCall; } }
 
         public override string Description
         {
@@ -55,11 +57,13 @@ namespace PBE
                 string conditionName = this.Name;
                 if (string.IsNullOrWhiteSpace(conditionName))
                     conditionName = "[unnamed]";
-                string info = ShouldExecute ? "(Execute)" : "(Skip)";
+                string info = this.ShouldExecute ? "Execute" : "Skip";
+                if (this.IsMethodCall)
+                    info += ", late evaluation)";
                 string value = this.Value;
                 if (this.IsMethodCall)
                     value = $"{this.ValueOrg} -> {value}";
-                return $"Condition {conditionName} \"{this.Value}\" == \"{this.EqualsValue}\" ({info})";
+                return $"Condition {conditionName} \"{value}\" == \"{this.EqualsValue}\" ({info})";
             }
         }
 
@@ -92,13 +96,24 @@ namespace PBE
         }
 
         /// <summary>
-        /// Prüft ob der angegebene Dateipfad existiert.
+        /// Prüft ob der angegebene Datei-/Verzeichnis-Pfad existiert.
         /// </summary>
-        /// <param name="value">Pfad zu einer Datei.</param>
-        /// <returns>"True" wenn die Datei existiert, "False" wenn die Datei nicht existiert.</returns>
+        /// <param name="value">Pfad zu einer Datei / einem Verzeichnis.</param>
+        /// <returns>"True" wenn die Datei / das Verzeichnis existiert, ansonsten "False".</returns>
         private static string ExistsMethod(string value)
         {
-            return File.Exists(value).ToString();
+            return (File.Exists(value) || Directory.Exists(value)).ToString();
+        }
+
+        /// <summary>
+        /// Prüft ob das angegebene Verzeichnis nicht leer ist.
+        /// </summary>
+        /// <param name="value">Pfad zu einem Verzeichnis.</param>
+        /// <returns>"True" wenn das Verzeichnis Dateien enthält. "False" wenn das Verzeichnis leer ist, oder nicht existiert.</returns>
+        private static string ContainsFilesMethod(string value)
+        {
+            return (Directory.Exists(value) 
+                && Directory.EnumerateFileSystemEntries(value).Any()).ToString();
         }
     }
 }

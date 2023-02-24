@@ -168,15 +168,25 @@ namespace PBE
 
         private void SetParam(string name, string value)
         {
+            string message = string.Empty;
             Parameters[name] = ParseParameters(value);
-            Console.WriteLine("  " + name + " = " + value);
+            if (PBEContext.CurrentContext.Parameters.TryGetValue(name, out var paramValue) && paramValue != value)
+            {
+                value = paramValue;
+                message = $"Override: {Parameters[name]} -> {value}";
+                Parameters[name] = ParseParameters(value);
+            }
+            Console.Write($"  {name} = {value}");
+            if (message != string.Empty)
+                Console.Write($" ({message})");
+            Console.WriteLine();
         }
 
         public string ParseParameters(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return value;
-            
+
             return Regex.Replace(value, "{(?<name>[^}]*)}", (match) =>
             {
                 string key = match.Groups["name"].Value;
