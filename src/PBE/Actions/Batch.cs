@@ -71,19 +71,14 @@ namespace PBE.Actions
 
             if (proc.ExitCode != 0)
             {
-                if (this.Cmd == "robocopy" && proc.ExitCode < 8)
-                {
-                    //Robocopy ab ExitCode 8 wird als Fehler betrachtet
-                    LogDetails += "====================="
-                        + Environment.NewLine
-                        + "ExitCode: " + proc.ExitCode;
-                }
-                else
-                {
-                    LogDetails += "====================="
-                        + Environment.NewLine
-                        + "ExitCode: " + proc.ExitCode;
+                LogDetails += "====================="
+                    + Environment.NewLine
+                    + "ExitCode: " + proc.ExitCode;
 
+                //Robocopy ab ExitCode 8 wird als Fehler betrachtet
+                // https://learn.microsoft.com/de-de/troubleshoot/windows-server/backup-and-storage/return-codes-used-robocopy-utility
+                if (!string.Equals(this.Cmd, "robocopy", StringComparison.OrdinalIgnoreCase) || proc.ExitCode >= 8)
+                {
                     this.TaskFailed = true;
                 }
             }

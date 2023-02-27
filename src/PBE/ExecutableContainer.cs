@@ -205,8 +205,12 @@ namespace PBE
 
         public string CreateExportFileName(string package, string version, string fsVersion = null, string fileNameP = null)
         {
-            string fileName = fileNameP;
-            if (fileNameP == null)
+            string fileName;
+            if (!string.IsNullOrWhiteSpace(fileNameP))
+            {
+                fileName = fileNameP;
+            }
+            else
             {
                 fileName = package;
                 if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
