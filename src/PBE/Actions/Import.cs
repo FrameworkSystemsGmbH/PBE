@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml.Linq;
 
@@ -28,7 +28,7 @@ namespace PBE.Actions
             var xaFile = xe.Attribute("ExportFile");
             if (xaFile != null)
             {
-                this.ExportFile = xaFile.Value;
+                this.ExportFile = container.ParseParameters(xaFile.Value);
                 string file = Path.Combine(this.Dir, this.ExportFile);
 
                 System.Version fsVer;

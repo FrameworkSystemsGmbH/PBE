@@ -194,7 +194,7 @@ namespace PBE
                 string replaced;
                 if (this.Parameters.TryGetValue(key, out replaced))
                 {
-                    return replaced;
+                    return this.ParseParameters(replaced);
                 }
                 else
                 {
@@ -203,26 +203,34 @@ namespace PBE
             });
         }
 
-        public string CreateExportFileName(string package, string version, string fsVersion = null)
+        public string CreateExportFileName(string package, string version, string fsVersion = null, string fileNameP = null)
         {
-            string fileName = package;
-            if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
+            string fileName;
+            if (!string.IsNullOrWhiteSpace(fileNameP))
             {
-                fileName = "eNVenta";
+                fileName = fileNameP;
             }
-            fileName = "{ExportFilePrefix}" + fileName + "_" + version;
-            if (!String.IsNullOrEmpty(fsVersion))
+            else
             {
-                Version fsver = Version.Parse(fsVersion);
-                int fieldCount = 4;
-                if (fsver.Revision == 0)
+                fileName = package;
+                if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
                 {
-                    fieldCount = 3;
-                    if (fsver.Build == 0)
-                        fieldCount = 2;
+                    fileName = "eNVenta";
                 }
+                fileName = "{ExportFilePrefix}" + fileName + "_" + version;
+                if (!String.IsNullOrEmpty(fsVersion))
+                {
+                    Version fsver = Version.Parse(fsVersion);
+                    int fieldCount = 4;
+                    if (fsver.Revision == 0)
+                    {
+                        fieldCount = 3;
+                        if (fsver.Build == 0)
+                            fieldCount = 2;
+                    }
 
-                fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+                    fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+                }
             }
             return ParseParameters(fileName);
         }

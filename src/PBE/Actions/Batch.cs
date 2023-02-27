@@ -1,4 +1,4 @@
-﻿using PBE.Utils;
+using PBE.Utils;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -75,7 +75,12 @@ namespace PBE.Actions
                     + Environment.NewLine
                     + "ExitCode: " + proc.ExitCode;
 
-                this.TaskFailed = true;
+                //Robocopy ab ExitCode 8 wird als Fehler betrachtet
+                // https://learn.microsoft.com/de-de/troubleshoot/windows-server/backup-and-storage/return-codes-used-robocopy-utility
+                if (!string.Equals(this.Cmd, "robocopy", StringComparison.OrdinalIgnoreCase) || proc.ExitCode >= 8)
+                {
+                    this.TaskFailed = true;
+                }
             }
         }
 

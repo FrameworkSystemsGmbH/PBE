@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Xml.Linq;
 
@@ -15,6 +15,7 @@ namespace PBE.Actions
         protected virtual string ExportDirParameter { get { return "ExportDir"; } }
         public string ExportFile1 { get; private set; }
         public string ExportFile2 { get; private set; }
+        public string ExportFileName { get; private set; }
 
         public Export(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
@@ -30,13 +31,16 @@ namespace PBE.Actions
             }
             Package = container.ParseParameters(xe.Attribute("Package").Value);
             Version = container.ParseParameters(xe.Attribute("Version").Value);
+            var xaExportFileName = xe.Attribute("ExportFileName");
+            ExportFileName = xaExportFileName != null ? container.ParseParameters(xaExportFileName.Value) : null;
             var attrMode = xe.Attribute("Mode");
+
             if (attrMode != null)
             {
                 this.Mode = attrMode.Value;
             }
 
-            string file = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version, this.FSVersion));
+            string file = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version, this.FSVersion, this.ExportFileName));
 
             var xaQueue = xe.Attribute("Queue");
             if (xaQueue != null)

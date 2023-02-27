@@ -24,6 +24,10 @@ Attribute:
   Das ist praktisch bei komplexeren Listen von Kommandozeilen-Argumenten.
   PBE kümmert sich dabei um die korrekte Behandlung von Leerzeichen und Anführungszeichen.
 
+Liefert die aufgerufene Routine einen Exit-Code != 0, dann wird der Vorgang als Fehlerhaft beendet.
+
+Wird als `Cmd="robocopy"` aufgrufen, dann führen die Exit-Codes 1-7 nicht zu einem Fehler (vergleiche auch <https://learn.microsoft.com/troubleshoot/windows-server/backup-and-storage/return-codes-used-robocopy-utility>)
+
 Beispiele:
 
 ```xml
@@ -139,6 +143,10 @@ Attribute:
 * **Queue**: optional - Der Name der Import-Queue, mit der dieser Export wieder importiert werden soll. Siehe auch Knoten `<ImportQueue>`
 
 * **Dir**: optional - der Ordner, in dem die Export-Dateien abgelegt werden sollen, falls dieser vom Parameter **{ExportDir}** abweicht.
+
+* **ExportFileName**: optional - der Dateiname ohne Dateiendung, der für die Export-Datei verwendet werden soll.
+  Wird dieses Attribut nicht angegeben, dann wird ein Dateiname nach folgendem Schema erzeugt: `{ExportFilePrefix}<Package>_<Version> (FS <fs-version>)`.
+  Der Dateiname kann Parameter beinhalten.
 
 * **IncludeBasePackages**: optional - gibt an ob Basis-Package in den Export eingeschlossen werden sollen.
   Mögliche Werte:
