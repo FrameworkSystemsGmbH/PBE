@@ -28,7 +28,15 @@ namespace PBE
                 return dir;
             }
 
-            // Prio2 - N&V Ordner-Struktur
+            // Prio2 - N&V Ordner-Struktur (neu - localappdata)
+            dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "FS", "Framework Studio " + fsVersion);
+            if (File.Exists(Path.Combine(dir, "FSConsole.exe")))
+            {
+                this.FsVerdict.TryAdd(fsVersion, dir);
+                return dir;
+            }
+
+            // Prio3 - N&V Ordner-Struktur (alt)
             dir = "C:\\FS\\Framework Studio " + fsVersion;
             if (File.Exists(Path.Combine(dir, "FSConsole.exe")))
             {
