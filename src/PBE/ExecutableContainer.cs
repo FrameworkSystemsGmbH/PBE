@@ -29,7 +29,7 @@ namespace PBE
             }
 
             // Prio2 - N&V Ordner-Struktur (neu - localappdata)
-            dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "FS", "Framework Studio " + fsVersion);
+            dir = Path.Combine(ParseParameters("{LocalAppData}"), "Programs", "FS", "Framework Studio " + fsVersion);
             if (File.Exists(Path.Combine(dir, "FSConsole.exe")))
             {
                 this.FsVerdict.TryAdd(fsVersion, dir);
@@ -123,6 +123,7 @@ namespace PBE
             SetParam("ExportFilePrefix", DateTime.Now.ToString("yyyy-MM-dd") + "_");
             SetParam("Title", "Nachtlauf {DateTimeText}");
             SetParam("Machine", Environment.MachineName);
+            SetParam("LocalAppData", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
         }
 
         public ExecutableContainer(CommandLineOptions options)
@@ -367,6 +368,12 @@ namespace PBE
                     sbParams.AppendFormat("<tr><td class=\"ParamName\">{0}</td><td class=\"ParamValue\">{1}</td></tr>\r\n",
                         HtmlHelper.HtmlEncode(pair.Key), HtmlHelper.HtmlEncode(pair.Value));
                 }
+                foreach(var pair in FsVerdict.ToArray().OrderBy(p => p.Key))
+                {
+                    sbParams.AppendFormat("<tr><td class=\"ParamName\">{0}</td><td class=\"ParamValue\">{1}</td></tr>\r\n",
+                        HtmlHelper.HtmlEncode("(FS " + pair.Key + ")"), HtmlHelper.HtmlEncode(pair.Value));
+                }
+
                 htmlContent = htmlContent.Replace("<!-- ParamsPlaceholder -->", sbParams.ToString());
 
                 htmlContent = htmlContent.Replace("<!-- PbeXmlPlaceHolder -->", this.XmlFilecontetForLog);
