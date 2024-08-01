@@ -63,7 +63,7 @@ namespace PBE.Actions
             String dir = this.Container.GetFSDirectory(this.FSVersion);
             String execPath = Path.Combine(dir, "FSConsole.exe");
 
-            String tempLogFile = this.Container.GetTempLogFile();
+            String tempLogFile = PBEContext.CurrentContext.GetTempLogFile();
             this.LogFile = tempLogFile;
 
             {

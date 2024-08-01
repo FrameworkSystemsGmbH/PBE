@@ -247,13 +247,6 @@ namespace PBE
         private object logLocker = new object();
         public static readonly object ConsoleLocker = new object();
 
-        public string GetTempLogFile()
-        {
-            return System.IO.Path.Combine(
-                PBEContext.CurrentContext.LogFileDirectory,
-                Guid.NewGuid().ToString("N") + ".temp.log");
-        }
-
         private ConcurrentDictionary<string, object> importLocks = new ConcurrentDictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
         public object GetImportLocker(string repName)
@@ -368,7 +361,7 @@ namespace PBE
                     sbParams.AppendFormat("<tr><td class=\"ParamName\">{0}</td><td class=\"ParamValue\">{1}</td></tr>\r\n",
                         HtmlHelper.HtmlEncode(pair.Key), HtmlHelper.HtmlEncode(pair.Value));
                 }
-                foreach(var pair in FsVerdict.ToArray().OrderBy(p => p.Key))
+                foreach (var pair in FsVerdict.ToArray().OrderBy(p => p.Key))
                 {
                     sbParams.AppendFormat("<tr><td class=\"ParamName\">{0}</td><td class=\"ParamValue\">{1}</td></tr>\r\n",
                         HtmlHelper.HtmlEncode("(FS " + pair.Key + ")"), HtmlHelper.HtmlEncode(pair.Value));
@@ -426,10 +419,6 @@ namespace PBE
 
             // Alle temporären Logfiles löschen
             File.Delete(this.Logfile);
-            foreach (var file in Directory.EnumerateFiles(PBEContext.CurrentContext.LogFileDirectory, "*.temp.log"))
-            {
-                File.Delete(file);
-            }
 
             Console.WriteLine("Execute...");
 
@@ -444,6 +433,8 @@ namespace PBE
             // html-Aktualisierung beenden
             htmlThreadRunning = false;
             htmlThread.Join();
+
+            PBEContext.CurrentContext.TryCleanupTempLogDirectory();
         }
 
         private volatile bool htmlThreadRunning = false;

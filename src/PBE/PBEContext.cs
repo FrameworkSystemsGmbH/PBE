@@ -16,6 +16,7 @@ namespace PBE
         }
 
         public readonly HashSet<string> TaskFilters;
+        private string tempLogDirectory;
 
         private PBEContext(CommandLineOptions options)
         {
@@ -37,13 +38,13 @@ namespace PBE
                     .Replace(";;", "*semikolon*");
 
                 var parts = escaped.Split(';').Select(s => s.Replace("*semikolon*", ";").Replace("*star*", "*")).ToArray();
-                foreach(var part in parts)
+                foreach (var part in parts)
                 {
                     var equalIndex = part.IndexOf('=');
                     if (equalIndex > 0)
                     {
                         var paramName = part.Substring(0, equalIndex).Trim();
-                        var paramValue = part.Substring(equalIndex+ 1);
+                        var paramValue = part.Substring(equalIndex + 1);
                         this.Parameters.Add(paramName, paramValue);
                     }
                 }
@@ -70,11 +71,43 @@ namespace PBE
             return fsi.FullName;
         }
 
+        public string GetTempLogFile()
+        {
+            return Path.Combine(
+                TempLogDirectory,
+                Guid.NewGuid().ToString("N") + ".temp.log");
+        }
+
+        private string CreateTempLogDirectory()
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), "PBE-LOG-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
+        }
+
+        public bool TryCleanupTempLogDirectory()
+        {
+            if (!string.IsNullOrEmpty(tempLogDirectory))
+            {
+                try
+                {
+                    Directory.Delete(TempLogDirectory, true);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public bool AutomaticMode { get; private set; }
         public string Filter { get; private set; }
         public string ConfigFile { get; private set; }
         public string LogFileDirectory { get; private set; }
         public string LogFileTemplate { get; private set; }
+        public string TempLogDirectory => tempLogDirectory ?? (tempLogDirectory = CreateTempLogDirectory());
 
         public IDictionary<string, string> Parameters { get; private set; }
     }
