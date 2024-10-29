@@ -7,7 +7,7 @@ Die folgende Konfiguration stellt beispielhaft einen etwas komplexeren Ablauf mi
 <!DOCTYPE PBE SYSTEM "PBE.dtd">
 <PBE Logfile="C:\temp\Log.html" Logarchive="C:\temp\Archive\Log_{DateTime}.html">
   <FSVersions>
-    <FSVersion FS="3.7.0.0" Dir="C:\Programme\Framework Systems\FrameworkStudio 3.7.3"/>
+    <FSVersion FS="4.7.0.0" Dir="C:\Programme\enventa Group\Framework Studio\4.7"/>
   </FSVersions>
 
   <Params>

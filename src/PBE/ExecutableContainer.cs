@@ -44,14 +44,27 @@ namespace PBE
                 return dir;
             }
 
-            // Prio3 - Starndard Installations-Verzeichnis in folgender Priorisierung:
+            // Prio4 - Starndard Installations-Verzeichnis:
+            // - Framework Studio\x.y
+            string searchDir = Path.Combine(
+                Environment.GetEnvironmentVariable("ProgramFiles"), 
+                "enventa Group", 
+                "Framework Studio", 
+                new Version(fsVersion).ToString(2));
+            if (File.Exists(Path.Combine(searchDir, "FSConsole.exe")))
+            {
+                this.FsVerdict.TryAdd(fsVersion, searchDir);
+                return searchDir;
+            }
+
+            // Prio5 - altes Starndard Installations-Verzeichnis in folgender Priorisierung:
             // - Framework Studio x.y.12
             // - Framework Studio x.y.2
             // - Framework Studio x.y
             // - Framework Studio x.y Beta2
             // - Framework Studio x.y Beta
-            string searchDir = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "Framework Systems");
-            if (Directory.Exists(searchDir))
+            string searchDirOld = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "Framework Systems");
+            if (Directory.Exists(searchDirOld))
             {
                 Version maxVersion = null;
                 int? maxBeta = null;
@@ -59,7 +72,7 @@ namespace PBE
 
                 var version = new Version(fsVersion);
                 string searchPattern = "Framework Studio " + version.ToString(2) + "*";
-                foreach (var path in Directory.EnumerateDirectories(searchDir, searchPattern)
+                foreach (var path in Directory.EnumerateDirectories(searchDirOld, searchPattern)
                     .Where(path => File.Exists(Path.Combine(path, "FSConsole.exe"))))
                 {
                     var fsDir = Path.GetFileName(path);
