@@ -12,14 +12,16 @@ Für die unterschiedlichen FS-Versionen werden die Programm-Verzeichnisse ermitt
 
     ```xml
     <FSVersions>
-        <FSVersion FS="3.7.0.0" Dir="C:\Programme\Framework Systems\FrameworkStudio 3.7.3"/>
-        <FSVersion FS="3.8.0.0" Dir="C:\Programme\Framework Systems\FrameworkStudio 3.8"/>
+        <FSVersion FS="4.7.0.0" Dir="C:\Programme\enventa Group\Framework Studio\4.7"/>
+        <FSVersion FS="4.8.0.0" Dir="C:\Programme\enventa Group\Framework Studio\4.8"/>
     </FSVersions>
     ```
 
 2. Order `C:\FS\Framework Studio X.Y.0.0\` - das ist der Standard im Haus von Nissen & Velten.
 
-3. Standard Installations-Verzeichnis `%ProgramFiles%\Framework Systems\Framework Studio X.Y`
+3. Standard Installations-Verzeichnis `%ProgramFiles%\enventa Group\Framework Studio\X.Y`
+
+4. Altes Standard Installations-Verzeichnis (bis zur Version 4.6) `%ProgramFiles%\Framework Systems\Framework Studio X.Y`
 
     Dabei werden auch ServiceRelease- und Beta-Versionen erkannt.
 
