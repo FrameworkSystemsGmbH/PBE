@@ -105,6 +105,19 @@ namespace PBE.Actions
 
         public override void ExecuteAction()
         {
+            if (!string.IsNullOrEmpty(this.ExportFile1))
+            {
+                string dir1 = Path.GetDirectoryName(this.ExportFile1);
+                if (!Directory.Exists(dir1))
+                    Directory.CreateDirectory(dir1);
+            }
+            if (!string.IsNullOrEmpty(this.ExportFile2))
+            {
+                string dir2 = Path.GetDirectoryName(this.ExportFile2);
+                if (!Directory.Exists(dir2))
+                    Directory.CreateDirectory(dir2);
+            }
+
             base.ExecuteAction();
 
             if (this.ExitCode1.GetValueOrDefault(0) < 0)

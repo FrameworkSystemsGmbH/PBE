@@ -34,6 +34,7 @@ namespace PBE.Actions
                 new XAttribute("Rep", this.Rep),
                 new XAttribute("Package", export.Package),
                 new XAttribute("Version", export.Version),
+                !string.IsNullOrEmpty(export.Dir) ? new XAttribute("Dir", export.Dir) : null,
                 export.Mode != null ? new XAttribute("Mode", export.Mode) : null);
 
             Import import = new Import(xeImport, this.Container, this.Indent + 1);
