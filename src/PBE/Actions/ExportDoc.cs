@@ -39,7 +39,13 @@ namespace PBE.Actions
                 Dir = container.ParseParameters("{" + this.ExportDirParameter + "}");
             }
 
-            string folder = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version) + "_Help_" + this.Iso);
+            string folder = this.Dir;
+
+            // Ab Version 4.6 kümmert sich FS selber um einen sprechenden Unter-Ordner.
+            if (FSVer < new Version(4, 6))
+            {
+                folder = Path.Combine(folder, container.CreateExportFileName(this.Package, this.Version) + "_Help_" + this.Iso);
+            }
 
             var args = new List<string>()
             {
