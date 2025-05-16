@@ -59,6 +59,7 @@
     <Compile Include="Actions\ImportQueue.cs" />
     <Compile Include="Actions\MakeDir.cs" />
     <Compile Include="Actions\Publish.cs" />
+    <Compile Include="Actions\RemoveDir.cs" />
     <Compile Include="CommandLineProcessor\CommandLineParser.cs" />
     <Compile Include="CommandLineProcessor\CommandLineOptions.cs" />
     <Compile Include="Executable.cs" />
