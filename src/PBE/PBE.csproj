@@ -66,6 +66,7 @@
     <Compile Include="ExecutableContainer.cs" />
     <Compile Include="ExecutableParallel.cs" />
     <Compile Include="ExecutableSequence.cs" />
+    <Compile Include="Utils\FSVersion.cs" />
     <Compile Include="Utils\FSUtils.cs" />
     <Compile Include="HtmlHelper.cs" />
     <Compile Include="PBEContext.cs" />

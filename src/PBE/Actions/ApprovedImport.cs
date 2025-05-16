@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PBE.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,12 +10,13 @@ namespace PBE.Actions
 {
     internal class ApprovedImport : Executable
     {
-        public const String TypeName = "ApprovedImport";
-        public override bool IsComplex { get { return true; } }
+        public const string TypeName = "ApprovedImport";
 
-        public String Dir { get; private set; }
-        public String HistoryDir { get; private set; }
-        public String Rep { get; private set; }
+        public override bool IsComplex => true;
+
+        public string Dir { get; private set; }
+        public string HistoryDir { get; private set; }
+        public string Rep { get; private set; }
 
         private List<Import> ImportList = new List<Import>();
 
@@ -58,12 +60,7 @@ namespace PBE.Actions
                         if (group == null)
                             continue;
 
-                        var fsVersion = Version.Parse(group.Value);
-                        fsVersion = new Version(
-                            fsVersion.Major,
-                            fsVersion.Minor,
-                            fsVersion.Build == -1 ? 0 : fsVersion.Build,
-                            fsVersion.Revision == -1 ? 0 : fsVersion.Revision);
+                        FSVersion fsVersion = new FSVersion(group.Value);
 
                         xeImport.Add(new XAttribute("FS", fsVersion.ToString(4)));
                         xeImport.Add(new XAttribute("Rep", this.Rep));
@@ -160,7 +157,7 @@ namespace PBE.Actions
         {
             get
             {
-                if (!String.IsNullOrEmpty(this.Name))
+                if (!string.IsNullOrEmpty(this.Name))
                     return this.Name;
                 return "ApprovedImport " + this.Rep;
             }

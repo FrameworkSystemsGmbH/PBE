@@ -21,100 +21,114 @@ namespace PBE
 
         public string GetFSDirectory(string fsVersion)
         {
-            // Prio1 - Es gibt schon eine Information
-            string dir;
-            if (this.FsVerdict.TryGetValue(fsVersion, out dir))
-            {
+            // Prio1 - Es gibt schon eine Information (z.B. über FSVersion definiert, oder bereits ausgewertet)
+            if (this.FsVerdict.TryGetValue(fsVersion, out string dir))
                 return dir;
-            }
+
+            FSVersion fsVer = new FSVersion(fsVersion);
+            string fsPath;
 
             // Prio2 - N&V Ordner-Struktur (neu - localappdata)
-            dir = Path.Combine(ParseParameters("{LocalAppData}"), "Programs", "FS", "Framework Studio " + fsVersion);
-            if (File.Exists(Path.Combine(dir, "FSConsole.exe")))
+            dir = Path.Combine(ParseParameters("{LocalAppData}"), "Programs", "FS");
+            if (TryGetFSVersionPath(dir, fsVer, out fsPath))
             {
-                this.FsVerdict.TryAdd(fsVersion, dir);
-                return dir;
+                this.FsVerdict.TryAdd(fsVersion, fsPath);
+                return fsPath;
             }
 
             // Prio3 - N&V Ordner-Struktur (alt)
-            dir = "C:\\FS\\Framework Studio " + fsVersion;
-            if (File.Exists(Path.Combine(dir, "FSConsole.exe")))
+            dir = "C:\\FS";
+            if (TryGetFSVersionPath(dir, fsVer, out fsPath))
             {
-                this.FsVerdict.TryAdd(fsVersion, dir);
-                return dir;
+                this.FsVerdict.TryAdd(fsVersion, fsPath);
+                return fsPath;
             }
 
-            // Prio4 - Starndard Installations-Verzeichnis:
+            // Prio4 - Standard Installations-Verzeichnis:
             // - Framework Studio\x.y
-            string searchDir = Path.Combine(
-                Environment.GetEnvironmentVariable("ProgramFiles"), 
-                "enventa Group", 
-                "Framework Studio", 
-                new Version(fsVersion).ToString(2));
-            if (File.Exists(Path.Combine(searchDir, "FSConsole.exe")))
+            dir = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "enventa Group", "Framework Studio");
+            if (TryGetFSVersionPath(dir, fsVer, out fsPath))
             {
-                this.FsVerdict.TryAdd(fsVersion, searchDir);
-                return searchDir;
+                this.FsVerdict.TryAdd(fsVersion, fsPath);
+                return fsPath;
             }
 
-            // Prio5 - altes Starndard Installations-Verzeichnis in folgender Priorisierung:
+            // Prio5 - altes Standard Installations-Verzeichnis in folgender Priorisierung:
             // - Framework Studio x.y.12
             // - Framework Studio x.y.2
             // - Framework Studio x.y
             // - Framework Studio x.y Beta2
             // - Framework Studio x.y Beta
-            string searchDirOld = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "Framework Systems");
-            if (Directory.Exists(searchDirOld))
+            dir = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "Framework Systems");
+            if (TryGetFSVersionPath(dir, fsVer, out fsPath))
             {
-                Version maxVersion = null;
-                int? maxBeta = null;
-                string maxPath = null;
-
-                var version = new Version(fsVersion);
-                string searchPattern = "Framework Studio " + version.ToString(2) + "*";
-                foreach (var path in Directory.EnumerateDirectories(searchDirOld, searchPattern)
-                    .Where(path => File.Exists(Path.Combine(path, "FSConsole.exe"))))
-                {
-                    var fsDir = Path.GetFileName(path);
-                    string dirVersionStr = fsDir.Substring(17);
-                    Version dirVersion;
-                    if (Version.TryParse(dirVersionStr, out dirVersion))
-                    {
-                        if (maxVersion == null || dirVersion > maxVersion)
-                        {
-                            maxVersion = dirVersion;
-                            maxPath = path;
-                            maxBeta = null;
-                        }
-                    }
-                    else if (maxVersion == null)
-                    {
-                        // Suche nach Beta-Version
-                        int betaPos = fsDir.IndexOf("Beta");
-                        if (betaPos > 0)
-                        {
-                            int betaVersion = 0;
-                            string betaVersionStr = fsDir.Substring(betaPos + 4);
-                            if (!int.TryParse(betaVersionStr.Trim(), out betaVersion))
-                            {
-                                betaVersion = 0;
-                            }
-                            if (maxBeta == null || betaVersion > maxBeta.Value)
-                            {
-                                maxBeta = betaVersion;
-                                maxPath = path;
-                            }
-                        }
-                    }
-                }
-                if (maxPath != null)
-                {
-                    this.FsVerdict.TryAdd(fsVersion, maxPath);
-                    return maxPath;
-                }
+                this.FsVerdict.TryAdd(fsVersion, fsPath);
+                return fsPath;
             }
 
             throw new ApplicationException("No installation found for Framework Studio " + fsVersion + ".");
+        }
+
+        private bool TryGetFSVersionPath(string basePath, FSVersion fsVersion, out string fsPath)
+        {
+            fsPath = string.Empty;
+
+            if (!Directory.Exists(basePath))
+                return false;
+
+            string pattern = $@"^(Framework Studio )?{Regex.Escape(fsVersion.Version.ToString(2))}(((\.\d*)*)?)?";
+
+            var fsDirs = Directory.EnumerateDirectories(basePath)
+                            .Where(d => Regex.IsMatch(Path.GetFileName(d), pattern, RegexOptions.IgnoreCase))
+                            .Where(d => File.Exists(Path.Combine(d, "FSConsole.exe")));
+
+            if (!fsDirs.Any())
+                return false;
+
+            // Preview Version auslesen
+            if (fsVersion.IsPreview)
+            {
+                fsPath = fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), "(.?Preview)$", RegexOptions.IgnoreCase)).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(fsPath))
+                    return true;
+            }
+
+            // Normale Version auslesen
+            Version maxV = null;
+            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), @"(?<version>\d\.\d((\.\d*)*)?)$")))
+            {
+                Match m = Regex.Match(Path.GetFileName(path), @"(?<version>\d\.\d((\.\d*)*)?)$");
+
+                if (Version.TryParse(m.Groups["version"].Value, out Version v) && (maxV == null || v > maxV))
+                {
+                    maxV = v;
+                    fsPath = path;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(fsPath))
+                return true;
+
+            // Beta Version auslesen
+            int maxBeta = -1;
+            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), @"(.?Beta(?<beta>\d*))$", RegexOptions.IgnoreCase)))
+            {
+                Match m = Regex.Match(Path.GetFileName(path), @"(.?Beta(?<beta>\d*))$");
+
+                if (string.IsNullOrEmpty(m.Groups["beta"].Value))
+                {
+                    maxBeta = 0;
+                    fsPath = path;
+                }
+                else if (int.TryParse(m.Groups["beta"].Value, out int beta) && beta > maxBeta)
+                {
+                    maxBeta = beta;
+                    fsPath = path;
+                }
+            }
+
+            return !string.IsNullOrEmpty(fsPath);
         }
 
         private void PrintHeader(CommandLineOptions options)
@@ -239,19 +253,11 @@ namespace PBE
                 {
                     fileName = "eNVenta";
                 }
-                fileName = "{ExportFilePrefix}" + fileName + "_" + version;
-                if (!String.IsNullOrEmpty(fsVersion))
-                {
-                    Version fsver = Version.Parse(fsVersion);
-                    int fieldCount = 4;
-                    if (fsver.Revision == 0)
-                    {
-                        fieldCount = 3;
-                        if (fsver.Build == 0)
-                            fieldCount = 2;
-                    }
 
-                    fileName += " (FS " + fsver.ToString(fieldCount) + ")";
+                fileName = "{ExportFilePrefix}" + fileName + "_" + version;
+                if (!string.IsNullOrEmpty(fsVersion) && FSVersion.TryParse(fsVersion, out FSVersion fsver))
+                {
+                    fileName += " (FS " + fsver.ToDisplayString() + ")";
                 }
             }
             return ParseParameters(fileName);

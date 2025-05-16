@@ -1,4 +1,4 @@
-using System;
+using PBE.Utils;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
@@ -10,10 +10,9 @@ namespace PBE.Actions
         public FSConsole(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
         {
-            this.FSVersion = container.ParseParameters(xe.Attribute("FS").Value);
+            this.FSVersionString = container.ParseParameters(xe.Attribute("FS").Value);
 
-            System.Version fsVer;
-            if (System.Version.TryParse(this.FSVersion, out fsVer))
+            if (FSVersion.TryParse(this.FSVersionString, out FSVersion fsVer))
             {
                 this.FSVer = fsVer;
             }
@@ -28,9 +27,9 @@ namespace PBE.Actions
             }
         }
 
-        public String Rep { get; private set; }
-        public string FSVersion { get; private set; }
-        public Version FSVer { get; private set; }
+        public string Rep { get; private set; }
+        public string FSVersionString { get; private set; }
+        public FSVersion FSVer { get; private set; }
         public string Arguments { get; protected set; }
         public string Arguments2 { get; protected set; }
 
@@ -42,7 +41,7 @@ namespace PBE.Actions
             get
             {
                 string desc = "FS " + FSVer.ToString(2) + " " + this.Rep;
-                if (!String.IsNullOrEmpty(this.Name))
+                if (!string.IsNullOrEmpty(this.Name))
                 {
                     desc += " " + this.Name;
                 }
@@ -60,14 +59,14 @@ namespace PBE.Actions
 
         public override void ExecuteAction()
         {
-            String dir = this.Container.GetFSDirectory(this.FSVersion);
-            String execPath = Path.Combine(dir, "FSConsole.exe");
+            string dir = this.Container.GetFSDirectory(this.FSVersionString);
+            string execPath = Path.Combine(dir, "FSConsole.exe");
 
-            String tempLogFile = PBEContext.CurrentContext.GetTempLogFile();
+            string tempLogFile = PBEContext.CurrentContext.GetTempLogFile();
             this.LogFile = tempLogFile;
 
             {
-                String args = this.Container.ParseParameters(this.Rep) + " " + Arguments + " \\LOGFILE \"" + tempLogFile + "\"";
+                string args = this.Container.ParseParameters(this.Rep) + " " + Arguments + " \\LOGFILE \"" + tempLogFile + "\"";
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
                     FileName = execPath,
@@ -87,9 +86,9 @@ namespace PBE.Actions
                     this.TaskFailed = true;
                 }
             }
-            if (!String.IsNullOrWhiteSpace(this.Arguments2))
+            if (!string.IsNullOrWhiteSpace(this.Arguments2))
             {
-                String args = this.Container.ParseParameters(this.Rep) + " " + Arguments2 + " \\LOGFILE \"" + tempLogFile + "\"";
+                string args = this.Container.ParseParameters(this.Rep) + " " + Arguments2 + " \\LOGFILE \"" + tempLogFile + "\"";
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
                     FileName = execPath,
