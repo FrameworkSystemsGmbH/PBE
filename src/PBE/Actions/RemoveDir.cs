@@ -3,9 +3,9 @@ using System.Xml.Linq;
 
 namespace PBE.Actions
 {
-    internal class MakeDir : Executable
+    internal class RemoveDir : Executable
     {
-        public MakeDir(XElement xe, ExecutableContainer container, int indent)
+        public RemoveDir(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
         {
             this.Dir = container.ParseParameters(xe.Attribute("Dir").Value);
@@ -17,13 +17,14 @@ namespace PBE.Actions
         {
             get
             {
-                return "MD " + ExecutableContainer.MakeShortText(this.Dir);
+                return "RD " + ExecutableContainer.MakeShortText(this.Dir);
             }
         }
 
         public override void ExecuteAction()
         {
-            Directory.CreateDirectory(this.Dir);
+            if (Directory.Exists(this.Dir))
+                Directory.Delete(this.Dir, true);
         }
     }
 }

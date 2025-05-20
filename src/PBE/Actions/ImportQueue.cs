@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 using System.Xml.Linq;
 
@@ -7,11 +6,12 @@ namespace PBE.Actions
 {
     internal class ImportQueue : Executable
     {
-        public const String TypeName = "ImportQueue";
-        public override bool IsComplex { get { return true; } }
+        public const string TypeName = "ImportQueue";
 
-        public String QueueName { get; private set; }
-        public String Rep { get; private set; }
+        public override bool IsComplex => true;
+
+        public string QueueName { get; private set; }
+        public string Rep { get; private set; }
 
         private ConcurrentQueue<Import> importQueue = new ConcurrentQueue<Import>();
         private ConcurrentQueue<Import> importList = new ConcurrentQueue<Import>();
@@ -30,7 +30,7 @@ namespace PBE.Actions
         {
             var xeImport = new XElement("Import",
                 export.Name != null ? new XAttribute("Name", export.Name) : null,
-                new XAttribute("FS", export.FSVersion),
+                new XAttribute("FS", export.FSVersionString),
                 new XAttribute("Rep", this.Rep),
                 new XAttribute("Package", export.Package),
                 new XAttribute("Version", export.Version),

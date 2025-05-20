@@ -7,8 +7,8 @@ namespace PBE.Actions
 {
     internal class CompileRun : FSConsole
     {
-        public String Run { get; private set; }
-        public int MaxParallal { get; private set; }
+        public string Run { get; private set; }
+        public int MaxParallel { get; private set; }
 
         public CompileRun(XElement xe, ExecutableContainer container, int indent)
             : base(xe, container, indent)
@@ -18,25 +18,22 @@ namespace PBE.Actions
             this.Arguments = "\\COMPILERUN \"" + this.Run + "\" \\NewProcessPerStep";
 
             // Ab FS 3.6 werden die MaxTasks unterstützt.
-            if (this.FSVer >= new Version(3, 6))
+            if (this.FSVer.Version >= new Version(3, 6))
             {
                 var xaMaxParallel = xe.Attribute("MaxParallel");
                 if (xaMaxParallel != null)
                 {
-                    int maxParallel = 0;
-                    if (int.TryParse(xaMaxParallel.Value, out maxParallel))
-                        this.MaxParallal = maxParallel;
+                    if (int.TryParse(xaMaxParallel.Value, out int maxParallel))
+                        this.MaxParallel = maxParallel;
                 }
 
-                if (this.MaxParallal > 0)
+                if (this.MaxParallel > 0)
                 {
-                    this.Arguments += " \\MaxParallel " + this.MaxParallal;
+                    this.Arguments += " \\MaxParallel " + this.MaxParallel;
                 }
             }
 
-            System.Version fsVer;
-            bool fsVerOk = System.Version.TryParse(this.FSVersion, out fsVer);
-            if (this.FSVer >= new System.Version(3, 4))
+            if (this.FSVer.Version >= new Version(3, 4))
             {
                 if ((bool?)xe.Attribute("DeleteCompileDir") != false)
                 {
@@ -123,17 +120,17 @@ namespace PBE.Actions
                     {
                         string linepart = line.Substring(24);
 
-                        if (this.FSVer >= new Version(3, 6) && linepart.StartsWith("Package versions compiled:", StringComparison.Ordinal) ||
+                        if (this.FSVer.Version >= new Version(3, 6) && linepart.StartsWith("Package versions compiled:", StringComparison.Ordinal) ||
                             linepart.StartsWith("Labels compiled: ", StringComparison.Ordinal))
                         {
                             readingMode = 1;
                         }
-                        else if (this.FSVer >= new Version(3, 6) && linepart.StartsWith("Package versions skipped:", StringComparison.Ordinal) ||
+                        else if (this.FSVer.Version >= new Version(3, 6) && linepart.StartsWith("Package versions skipped:", StringComparison.Ordinal) ||
                             linepart.StartsWith(" Labels skipped: ", StringComparison.Ordinal))
                         {
                             readingMode = 2;
                         }
-                        else if (this.FSVer >= new Version(3, 6) && linepart.StartsWith("Package versions failed:", StringComparison.Ordinal) ||
+                        else if (this.FSVer.Version >= new Version(3, 6) && linepart.StartsWith("Package versions failed:", StringComparison.Ordinal) ||
                             linepart.StartsWith("  Labels failed: ", StringComparison.Ordinal))
                         {
                             readingMode = 3;

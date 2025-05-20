@@ -59,6 +59,7 @@
     <Compile Include="Actions\ImportQueue.cs" />
     <Compile Include="Actions\MakeDir.cs" />
     <Compile Include="Actions\Publish.cs" />
+    <Compile Include="Actions\RemoveDir.cs" />
     <Compile Include="CommandLineProcessor\CommandLineParser.cs" />
     <Compile Include="CommandLineProcessor\CommandLineOptions.cs" />
     <Compile Include="Executable.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="ExecutableContainer.cs" />
     <Compile Include="ExecutableParallel.cs" />
     <Compile Include="ExecutableSequence.cs" />
+    <Compile Include="Utils\FSVersion.cs" />
     <Compile Include="Utils\FSUtils.cs" />
     <Compile Include="HtmlHelper.cs" />
     <Compile Include="PBEContext.cs" />

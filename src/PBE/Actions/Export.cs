@@ -1,3 +1,4 @@
+using PBE.Utils;
 using System;
 using System.IO;
 using System.Xml.Linq;
@@ -6,13 +7,16 @@ namespace PBE.Actions
 {
     internal class Export : FSConsole
     {
-        public String Package { get; private set; }
-        public String Version { get; private set; }
-        public String Dir { get; private set; }
-        public String Mode { get; private set; }
+        public string Package { get; private set; }
+        public string Version { get; private set; }
+        public string Dir { get; private set; }
+        public string Mode { get; private set; }
         public string IncludeBasePackages { get; private set; }
-        public virtual String Queue { get; protected set; }
-        protected virtual string ExportDirParameter { get { return "ExportDir"; } }
+        public virtual string Queue { get; protected set; }
+
+        protected virtual string ExportDirParameter
+        { get { return "ExportDir"; } }
+
         public string ExportFile1 { get; private set; }
         public string ExportFile2 { get; private set; }
         public string ExportFileName { get; private set; }
@@ -40,7 +44,7 @@ namespace PBE.Actions
                 this.Mode = attrMode.Value;
             }
 
-            string file = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version, this.FSVersion, this.ExportFileName));
+            string file = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version, this.FSVersionString, this.ExportFileName));
 
             var xaQueue = xe.Attribute("Queue");
             if (xaQueue != null)
@@ -48,26 +52,25 @@ namespace PBE.Actions
 
             this.IncludeBasePackages = (string)xe.Attribute("IncludeBasePackages");
             string argumentIncludeBasePackages = null;
-            if (!String.IsNullOrEmpty(this.IncludeBasePackages))
+            if (!string.IsNullOrEmpty(this.IncludeBasePackages))
                 argumentIncludeBasePackages = @" \IncludeBasePackages " + this.IncludeBasePackages;
 
-            System.Version fsVer;
-            bool fsVerOk = System.Version.TryParse(this.FSVersion, out fsVer);
+            bool fsVerOk = FSVersion.TryParse(this.FSVersionString, out FSVersion fsVer);
 
             if ("Bugfix".Equals(this.Mode, StringComparison.OrdinalIgnoreCase))
             {
-                if (fsVerOk && fsVer >= new System.Version(3, 10))
+                if (fsVerOk && fsVer.Version >= new Version(3, 10))
                 {
                     // seit FS 3.10 gibt es keine separate Debug-Datei mehr
                     this.ExportFile1 = file + ".srdb";
                 }
-                else if (fsVerOk && fsVer >= new System.Version(3, 8))
+                else if (fsVerOk && fsVer.Version >= new Version(3, 8))
                 {
-                    // seit FS 3.8 heißt Bugfix ServierRelease (SR)
+                    // seit FS 3.8 heißt Bugfix ServiceRelease (SR)
                     this.ExportFile1 = file + ".srdb";
                     this.ExportFile2 = file + ".debugsrdb";
                 }
-                else if (fsVerOk && fsVer >= new System.Version(3, 4))
+                else if (fsVerOk && fsVer.Version >= new Version(3, 4))
                 {
                     // seit FS 3.4 gibt es die debugbugfixdb
                     this.ExportFile1 = file + ".bugfixdb";
@@ -79,14 +82,14 @@ namespace PBE.Actions
                     this.ExportFile2 = file + ".debugdb";
                 }
 
-                if (!String.IsNullOrEmpty(this.ExportFile1))
+                if (!string.IsNullOrEmpty(this.ExportFile1))
                     this.Arguments = "\\PACKAGE \"" + this.Package + "\" \\VERSION \"" + this.Version + "\" \\EXPORT true \"" + this.ExportFile1 + "\"" + argumentIncludeBasePackages;
-                if (!String.IsNullOrEmpty(this.ExportFile2))
+                if (!string.IsNullOrEmpty(this.ExportFile2))
                     this.Arguments2 = "\\PACKAGE \"" + this.Package + "\" \\VERSION \"" + this.Version + "\" \\EXPORT true \"" + this.ExportFile2 + "\"" + argumentIncludeBasePackages;
             }
             else
             {
-                if (fsVerOk && fsVer >= new System.Version(3, 10))
+                if (fsVerOk && fsVer.Version >= new Version(3, 10))
                 {
                     // seit FS 3.10 gibt es keine separate Debug-Datei mehr
                     this.ExportFile1 = file + ".db";
@@ -124,11 +127,11 @@ namespace PBE.Actions
             {
                 // Fehler beim Export => Sicherstellen evtl. schon teilweise erzeugte Package-Dateien gelöscht werden
                 this.TaskFailed = true;
-                if (!String.IsNullOrEmpty(this.ExportFile1) && File.Exists(this.ExportFile1))
+                if (!string.IsNullOrEmpty(this.ExportFile1) && File.Exists(this.ExportFile1))
                 {
                     File.Delete(this.ExportFile1);
                 }
-                if (!String.IsNullOrEmpty(this.ExportFile2) && File.Exists(this.ExportFile2))
+                if (!string.IsNullOrEmpty(this.ExportFile2) && File.Exists(this.ExportFile2))
                 {
                     File.Delete(this.ExportFile2);
                 }
@@ -136,13 +139,13 @@ namespace PBE.Actions
             else if (this.ExitCode2.GetValueOrDefault(0) < 0)
             {
                 // Debug konnte nicht exportiert werden => kein großes Problem
-                if (!String.IsNullOrEmpty(this.ExportFile2) && File.Exists(this.ExportFile2))
+                if (!string.IsNullOrEmpty(this.ExportFile2) && File.Exists(this.ExportFile2))
                 {
                     File.Delete(this.ExportFile2);
                 }
             }
 
-            if (!String.IsNullOrEmpty(this.Queue) &&
+            if (!string.IsNullOrEmpty(this.Queue) &&
                 this.ExitCode2.GetValueOrDefault(0) >= 0 &&
                 this.ExitCode1.GetValueOrDefault(0) >= 0)
             {

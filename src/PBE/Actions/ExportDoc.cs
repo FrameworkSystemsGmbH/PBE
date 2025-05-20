@@ -9,13 +9,15 @@ namespace PBE.Actions
 {
     internal class ExportDoc : FSConsole
     {
-        public String Package { get; private set; }
-        public String Version { get; private set; }
-        public String Iso { get; private set; }
+        public string Package { get; private set; }
+        public string Version { get; private set; }
+        public string Iso { get; private set; }
         public bool ExportDBTables { get; private set; }
-        public String Dir { get; private set; }
+        public string Dir { get; private set; }
+
         protected virtual string ExportDirParameter
         { get { return "ExportDir"; } }
+
         public bool UseLicense { get; set; }
         public string Setting { get; set; }
 
@@ -42,7 +44,7 @@ namespace PBE.Actions
             string folder = this.Dir;
 
             // Ab Version 4.6 kümmert sich FS selber um einen sprechenden Unter-Ordner.
-            if (FSVer < new Version(4, 6))
+            if (FSVer.Version < new Version(4, 6))
             {
                 folder = Path.Combine(folder, container.CreateExportFileName(this.Package, this.Version) + "_Help_" + this.Iso);
             }
