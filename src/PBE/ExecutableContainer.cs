@@ -76,7 +76,7 @@ namespace PBE
             if (!Directory.Exists(basePath))
                 return false;
 
-            string pattern = $@"^(Framework Studio )?{Regex.Escape(fsVersion.Version.ToString(2))}(((\.\d*)*)?)?";
+            string pattern = $@"^(Framework Studio )?{Regex.Escape(fsVersion.Version.ToString(2))}((\.\d*)*)?";
 
             var fsDirs = Directory.EnumerateDirectories(basePath)
                             .Where(d => Regex.IsMatch(Path.GetFileName(d), pattern, RegexOptions.IgnoreCase))
