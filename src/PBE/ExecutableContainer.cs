@@ -53,12 +53,7 @@ namespace PBE
                 return fsPath;
             }
 
-            // Prio5 - altes Standard Installations-Verzeichnis in folgender Priorisierung:
-            // - Framework Studio x.y.12
-            // - Framework Studio x.y.2
-            // - Framework Studio x.y
-            // - Framework Studio x.y Beta2
-            // - Framework Studio x.y Beta
+            // Prio5 - altes Standard Installations-Verzeichnis
             dir = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "Framework Systems");
             if (TryGetFSVersionPath(dir, fsVer, out fsPath))
             {
@@ -69,6 +64,14 @@ namespace PBE
             throw new ApplicationException("No installation found for Framework Studio " + fsVersion + ".");
         }
 
+        // Folgende Priorisierung innerhalb einer Version:
+        // - Framework Studio x.y Preview (nur, wenn man das Executable mit einer Preview Version ausführen möchte)
+        // - Framework Studio x.y.12
+        // - Framework Studio x.y.2
+        // - Framework Studio x.y
+        // - Framework Studio x.y Beta 4
+        // - Framework Studio x.y Beta2
+        // - Framework Studio x.y Beta
         private bool TryGetFSVersionPath(string basePath, FSVersion fsVersion, out string fsPath)
         {
             fsPath = string.Empty;
@@ -97,9 +100,10 @@ namespace PBE
 
             // Normale Version auslesen
             Version maxV = null;
-            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), @"(?<version>\d\.\d((\.\d*)*)?)$")))
+            string versionRegexPattern = @"(?<version>\d\.\d((\.\d*)*)?)$";
+            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), versionRegexPattern)))
             {
-                Match m = Regex.Match(Path.GetFileName(path), @"(?<version>\d\.\d((\.\d*)*)?)$");
+                Match m = Regex.Match(Path.GetFileName(path), versionRegexPattern);
 
                 if (Version.TryParse(m.Groups["version"].Value, out Version v) && (maxV == null || v > maxV))
                 {
@@ -113,9 +117,10 @@ namespace PBE
 
             // Beta Version auslesen
             int maxBeta = -1;
-            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), @"(.?Beta(?<beta>\d*))$", RegexOptions.IgnoreCase)))
+            string betaRegexPattern = @"(.?Beta\s*(?<beta>\d*))$";
+            foreach (string path in fsDirs.Where(d => Regex.IsMatch(Path.GetFileName(d), betaRegexPattern, RegexOptions.IgnoreCase)))
             {
-                Match m = Regex.Match(Path.GetFileName(path), @"(.?Beta(?<beta>\d*))$");
+                Match m = Regex.Match(Path.GetFileName(path), betaRegexPattern, RegexOptions.IgnoreCase);
 
                 if (string.IsNullOrEmpty(m.Groups["beta"].Value))
                 {
