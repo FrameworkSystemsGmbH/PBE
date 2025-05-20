@@ -80,7 +80,8 @@ namespace PBE
 
             var fsDirs = Directory.EnumerateDirectories(basePath)
                             .Where(d => Regex.IsMatch(Path.GetFileName(d), pattern, RegexOptions.IgnoreCase))
-                            .Where(d => File.Exists(Path.Combine(d, "FSConsole.exe")));
+                            .Where(d => File.Exists(Path.Combine(d, "FSConsole.exe")))
+                            .ToArray();
 
             if (!fsDirs.Any())
                 return false;
