@@ -12,10 +12,7 @@ namespace PBE.Actions
         {
             this.FSVersionString = container.ParseParameters(xe.Attribute("FS").Value);
 
-            if (FSVersion.TryParse(this.FSVersionString, out FSVersion fsVer))
-            {
-                this.FSVer = fsVer;
-            }
+            FSVer = new FSVersion(FSVersionString);
 
             // nicht parsen - wird erst im Execute geparsed
             this.Rep = xe.Attribute("Rep").Value;
