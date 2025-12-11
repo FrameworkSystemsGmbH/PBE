@@ -11,7 +11,7 @@ namespace PBE.Utils
         {
             if (string.IsNullOrWhiteSpace(version))
             {
-                throw new ArgumentException("Version string cannot be null or empty.", nameof(version));
+                throw new ArgumentException("FSVersion string must not be null or empty.", nameof(version));
             }
 
             if (version.EndsWith(".pre", StringComparison.OrdinalIgnoreCase))
@@ -30,7 +30,7 @@ namespace PBE.Utils
             }
             else
             {
-                throw new ArgumentException($"Version String {version} could not be Parsed!");
+                throw new ArgumentException($"FSVersion string {version} could not be parsed!{Environment.NewLine}Please correct your xml definition.");
             }
         }
 
