@@ -62,7 +62,11 @@ namespace PBE.Actions
                     this.Mode = attrMode.Value;
                 }
 
-                string file = Path.Combine(this.Dir, container.CreateExportFileName(this.Package, this.Version, this.FSVersionString));
+                string filename = container.HasParameter("ImportFilePrefix")
+                    ? container.CreateImportFileName(this.Package, this.Version, this.FSVersionString)
+                    : container.CreateExportFileName(this.Package, this.Version, this.FSVersionString);
+
+                string file = Path.Combine(this.Dir, filename);
 
                 bool fsVerOk = FSVersion.TryParse(this.FSVersionString, out FSVersion fsVer);
 

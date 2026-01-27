@@ -245,28 +245,41 @@ namespace PBE
             });
         }
 
+        public bool HasParameter(string name) => Parameters.ContainsKey(name);
+
         public string CreateExportFileName(string package, string version, string fsVersion = null, string fileNameP = null)
         {
-            string fileName;
             if (!string.IsNullOrWhiteSpace(fileNameP))
-            {
-                fileName = fileNameP;
-            }
-            else
-            {
-                fileName = package;
-                if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
-                {
-                    fileName = "eNVenta";
-                }
+                return ParseParameters(fileNameP);
 
-                fileName = "{ExportFilePrefix}" + fileName + "_" + version;
-                if (!string.IsNullOrEmpty(fsVersion) && FSVersion.TryParse(fsVersion, out FSVersion fsver))
-                {
-                    fileName += " (FS " + fsver.ToDisplayString() + ")";
-                }
+            return ParseParameters("{ExportFilePrefix}" + CreateFileName(package, version, fsVersion));
+        }
+
+        public string CreateImportFileName(string package, string version, string fsVersion = null, string fileNameP = null)
+        {
+            if (!string.IsNullOrWhiteSpace(fileNameP))
+                return ParseParameters(fileNameP);
+
+            return ParseParameters("{ImportFilePrefix}" + CreateFileName(package, version, fsVersion));
+        }
+
+        private string CreateFileName(string package, string version, string fsVersion = null)
+        {
+            string fileName = package;
+
+            if (fileName.Equals("NVinity", StringComparison.OrdinalIgnoreCase))
+            {
+                fileName = "eNVenta";
             }
-            return ParseParameters(fileName);
+
+            fileName += "_" + version;
+
+            if (!string.IsNullOrEmpty(fsVersion) && FSVersion.TryParse(fsVersion, out FSVersion fsver))
+            {
+                fileName += " (FS " + fsver.ToDisplayString() + ")";
+            }
+
+            return fileName;
         }
 
         private object logLocker = new object();
@@ -311,11 +324,11 @@ namespace PBE
 
         internal readonly Dictionary<string, Actions.ImportQueue> ImportQueues = new Dictionary<string, Actions.ImportQueue>(StringComparer.Ordinal);
 
-        public void WriteLog(String line)
+        public void WriteLog(string line)
         {
             lock (logLocker)
             {
-                System.IO.File.AppendAllText(this.Logfile, line + Environment.NewLine);
+                File.AppendAllText(this.Logfile, line + Environment.NewLine);
             }
         }
 
@@ -334,16 +347,6 @@ namespace PBE
         private Dictionary<String, String> Parameters = new Dictionary<string, string>(StringComparer.Ordinal);
 
         private Executable rootAction;
-
-        private void WriteParametersToLog(StreamWriter sw)
-        {
-            sw.WriteLine("Parameters:");
-            foreach (var pair in this.Parameters)
-            {
-                sw.WriteLine("{0,17}: {1}", pair.Key, pair.Value);
-            }
-            sw.WriteLine();
-        }
 
         public static readonly object htmlWriteLocker = new object();
 
